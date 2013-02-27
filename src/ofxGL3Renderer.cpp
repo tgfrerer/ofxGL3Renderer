@@ -21,6 +21,9 @@ ofxGL3Renderer::ofxGL3Renderer(bool useShapeColor)
 	triPoints.resize(3);
 
 	currentFbo = NULL;
+	
+	glGenVertexArrays(1, &defaultVAO);	// generate one default VAO into which we can store the VBOs for our built-in primitives.
+	
 }
 
 //----------------------------------------------------------
@@ -1063,12 +1066,15 @@ void ofxGL3Renderer::drawTriangle(float x1, float y1, float z1, float x2, float 
 	triPoints[1].set(x2,y2,z2);
 	triPoints[2].set(x3,y3,z3);
 
+	// bind vertex array
+	glBindVertexArray(defaultVAO);
 	
 	// use smoothness, if requested:
 	if (bSmoothHinted && bFilled == OF_OUTLINE) startSmoothing();
 	triangleVbo.setVertexData(&triPoints[0], 3, GL_DYNAMIC_DRAW);
 
 	applyModelViewProjectionMatrices();
+
 	
 	glBindBuffer(GL_ARRAY_BUFFER, triangleVbo.getVertId()); // bind to triangle vertices
 	glEnableVertexAttribArray(0);							// activate attribute 0 in shader
@@ -1090,6 +1096,9 @@ void ofxGL3Renderer::drawCircle(float x, float y, float z,  float radius){
 	for(int i=0;i<(int)circleCache.size();i++){
 		circlePoints[i].set(radius*circleCache[i].x+x,radius*circleCache[i].y+y,z);
 	}
+
+	// bind default vertex array
+	glBindVertexArray(defaultVAO);
 
 	circleVbo.setVertexData(&circlePoints[0].x, 3, circlePoints.size(), GL_DYNAMIC_DRAW, sizeof(ofVec3f));
 

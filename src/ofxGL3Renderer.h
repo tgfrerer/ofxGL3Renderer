@@ -17,6 +17,9 @@ class ofxGL3Renderer: public ofBaseRenderer{
 	
 	void applyModelViewProjectionMatrices();
 	
+	GLuint defaultVAO;
+	
+	
 public:
 	ofxGL3Renderer(bool useShapeColor=true);
 	~ofxGL3Renderer(){}

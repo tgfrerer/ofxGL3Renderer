@@ -83,13 +83,13 @@ void ofAppGLFWWindow::setupOpenGL(int w, int h, int screenMode){
 
 	int result;
 	
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	windowP = glfwCreateWindow(800, 600, "GLFW Window test", NULL, NULL);
+	windowP = glfwCreateWindow(800, 600, "GLFW Window", NULL, NULL);
 
 	
 	
