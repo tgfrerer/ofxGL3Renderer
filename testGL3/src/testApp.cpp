@@ -268,12 +268,16 @@ void testApp::draw(){
 	
 	ofClear(0,0,0);
 	
-	glDrawElements(GL_LINES, 2* MAP_NUM_LINES , GL_UNSIGNED_INT, 0);
+	// glDrawElements(GL_LINES, 2* MAP_NUM_LINES , GL_UNSIGNED_INT, 0);
+	
+	ofFill();
+	ofCircle(0, 0, 5);
+	ofNoFill();
+	ofCircle(0, 0, 6);
 	
 //	ofSetColor(255, 0, 0);
 //	ofCircle(200,200,40);
 	
-	ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()), ofVec2f(10,10));
 	mPassThrough.end();
 	mCam1.end();
 

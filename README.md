@@ -7,7 +7,7 @@ EXPERIMENTAL opengl3.2 context for openframeworks using glfw3. Currently Mac-Ony
 
 This will blow up in your face, hide vertices everywhere and steal your lunch money.
 
-Consider it about as stable as drunk giraffe on a tightrope.
+Consider it about as stable as a drunk giraffe on a tightrope.
 
 Play around with this at your own peril.
 
@@ -15,4 +15,7 @@ Play around with this at your own peril.
 
 1. Creates an openGL 3.2 context successfully on mac
 2. GLSL 150 seems to work
-3. renderer itself is still classic openGL renderer, needs some GL3 love.
+
+## implemented GL3 drawing functions in ofxGL3Renderer:
+
+1. ofCircle() -> Circles work =) 

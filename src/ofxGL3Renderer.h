@@ -2,6 +2,7 @@
 #include "ofBaseTypes.h"
 #include "ofPolyline.h"
 #include "ofMatrix4x4.h"
+#include "ofVbo.h"
 
 #include <stack>
 class ofShapeTessellation;
@@ -135,6 +136,10 @@ private:
 	vector<ofPoint> rectPoints;
 	vector<ofPoint> triPoints;
 	vector<ofPoint> circlePoints;
+	
+	
+	ofVbo circleVbo;
+	
 	ofPolyline circlePolyline;
 	
 	ofMesh sphereMesh;

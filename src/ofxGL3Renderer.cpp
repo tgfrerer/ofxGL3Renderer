@@ -999,13 +999,18 @@ void ofxGL3Renderer::drawCircle(float x, float y, float z,  float radius){
 		circlePoints[i].set(radius*circleCache[i].x+x,radius*circleCache[i].y+y,z);
 	}
 
-	// use smoothness, if requested:
-	if (bSmoothHinted && bFilled == OF_OUTLINE) startSmoothing();
+	circleVbo.setVertexData(&circlePoints[0].x, 3, circlePoints.size(), GL_DYNAMIC_DRAW, sizeof(ofVec3f));
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), &circlePoints[0].x);
+	glBindBuffer(GL_ARRAY_BUFFER,circleVbo.getVertId());		// bind the circle vertex vbo
+	glEnableVertexAttribArray(0);								// we assume vertex data goes in attribute position zero on the current vertex shader
+	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,0);
+	
+	
+	// DRAW !!!
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_FAN : GL_LINE_STRIP, 0, circlePoints.size());
 
+	glDisableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);							// unbind the circle vertex vbo
 	// use smoothness, if requested:
 	if (bSmoothHinted && bFilled == OF_OUTLINE) endSmoothing();
 
