@@ -8,9 +8,15 @@
 class ofShapeTessellation;
 class ofMesh;
 class ofFbo;
-
+class ofShader;
 
 class ofxGL3Renderer: public ofBaseRenderer{
+
+	typedef ofPtr<ofShader> shaderP_t;
+	shaderP_t currentShader;
+	
+	void applyModelViewProjectionMatrices();
+	
 public:
 	ofxGL3Renderer(bool useShapeColor=true);
 	~ofxGL3Renderer(){}
@@ -32,10 +38,16 @@ public:
 	bool rendersPathPrimitives(){
 		return false;
 	}
+	
+	//--------------------------------------------
 
+	void		beginShader(shaderP_t shader_);
+	void		endShader();
 
+	shaderP_t	getCurrentShader(){ return currentShader; };
 
 	//--------------------------------------------
+
 	// transformations
 	void pushView();
 	void popView();
@@ -121,14 +133,29 @@ public:
 	void drawEllipse(float x, float y, float z, float width, float height);
 	void drawString(string text, float x, float y, float z, ofDrawBitmapMode mode);
 
+	
+	ofMatrix4x4& getModelViewMatrix(){return currentModelViewMatrix;};
+	
 private:
 	void startSmoothing();
 	void endSmoothing();
 
 	ofHandednessType coordHandedness;
+
+	ofMatrixMode	currentMatrixMode;
+	
+	ofMatrix4x4		currentModelViewMatrix;
+	ofMatrix4x4		currentProjectionMatrix;
+	ofMatrix4x4		currentTextureMatrix;
+	
+	ofMatrix4x4*	currentMatrix;
+	
 	stack <ofRectangle> viewportHistory;
-	stack <ofMatrix4x4> modelViewStack;
-	stack <ofMatrix4x4> projectionStack;
+
+	stack <ofMatrix4x4> modelViewMatrixStack;
+	stack <ofMatrix4x4> projectionMatrixStack;
+	stack <ofMatrix4x4> textureMatrixStack;
+	
 	bool bBackgroundAuto;
 	ofFloatColor bgColor;
 
@@ -139,6 +166,7 @@ private:
 	
 	
 	ofVbo circleVbo;
+	ofVbo triangleVbo;
 	
 	ofPolyline circlePolyline;
 	

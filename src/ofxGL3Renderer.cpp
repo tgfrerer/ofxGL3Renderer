@@ -8,9 +8,12 @@
 #include "ofGLUtils.h"
 #include "ofImage.h"
 #include "ofFbo.h"
+#include "ofShader.h"
+
 
 //----------------------------------------------------------
-ofxGL3Renderer::ofxGL3Renderer(bool useShapeColor){
+ofxGL3Renderer::ofxGL3Renderer(bool useShapeColor)
+: currentMatrix(&currentModelViewMatrix){
 	bBackgroundAuto = true;
 
 	linePoints.resize(2);
@@ -25,7 +28,39 @@ void ofxGL3Renderer::update(){
 
 }
 
-//----------------------------------------------------------
+// ----------------------------------------------------------------------
+
+/// tig: The current GLSL shader should really be a member of the renderer,
+/// since only openGL uses shaders, and different opengl versions allow
+/// different shader language versions they can't be seen to be too far decoupled.
+
+void ofxGL3Renderer::beginShader(shaderP_t shader_){
+
+	if (shader_.get() == NULL ){
+		ofLogWarning() << "cannot bind NULL shader";
+		return;
+	}
+	
+	if (currentShader.get() != NULL &&  shader_ != currentShader){
+		// we currently have another shader bound.
+		// let's end the current shader so that a new one can be bound.
+		currentShader->end();
+	}
+	currentShader = shader_;
+	currentShader->begin();
+}
+
+// ----------------------------------------------------------------------
+
+void ofxGL3Renderer::endShader(){
+	currentShader->end();
+}
+
+// ----------------------------------------------------------------------
+
+
+// ----------------------------------------------------------------------
+
 void ofxGL3Renderer::draw(ofMesh & vertexData, bool useColors, bool useTextures, bool useNormals){
 	if(vertexData.getNumVertices()){
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -241,11 +276,16 @@ void ofxGL3Renderer::pushView() {
 
 	// done like this cause i was getting GL_STACK_UNDERFLOW
 	// should ofPush/PopMatrix work the same way, what if it's mixed with glPush/PopMatrix
-	ofMatrix4x4 m;
-	glGetFloatv(GL_PROJECTION_MATRIX,m.getPtr());
-	projectionStack.push(m);
-	glGetFloatv(GL_MODELVIEW_MATRIX,m.getPtr());
-	modelViewStack.push(m);
+	matrixMode(OF_MATRIX_PROJECTION);
+	pushMatrix();	// will push projection matrix
+	matrixMode(OF_MATRIX_MODELVIEW);
+	pushMatrix();	// will push modelview matrix
+	
+//	ofMatrix4x4 m;
+//	glGetFloatv(GL_PROJECTION_MATRIX,m.getPtr());
+//	projectionStack.push(m);
+//	glGetFloatv(GL_MODELVIEW_MATRIX,m.getPtr());
+//	modelViewStack.push(m);
 }
 
 
@@ -264,20 +304,26 @@ void ofxGL3Renderer::popView() {
 
 	// done like this cause i was getting GL_STACK_UNDERFLOW
 	// should ofPush/PopMatrix work the same way, what if it's mixed with glPush/PopMatrix
-	glMatrixMode(GL_PROJECTION);
-	if(!projectionStack.empty()){
-		glLoadMatrixf(projectionStack.top().getPtr());
-		projectionStack.pop();
-	}else{
-		ofLogError() << "popView: couldn't pop projection matrix, stack empty. probably wrong anidated push/popView";
-	}
-	glMatrixMode(GL_MODELVIEW);
-	if(!modelViewStack.empty()){
-		glLoadMatrixf(modelViewStack.top().getPtr());
-		modelViewStack.pop();
-	}else{
-		ofLogError() << "popView: couldn't pop modelView matrix, stack empty. probably wrong anidated push/popView";
-	}
+//	glMatrixMode(GL_PROJECTION);
+//	if(!projectionStack.empty()){
+//		glLoadMatrixf(projectionStack.top().getPtr());
+//		projectionStack.pop();
+//	}else{
+//		ofLogError() << "popView: couldn't pop projection matrix, stack empty. probably wrong anidated push/popView";
+//	}
+//	glMatrixMode(GL_MODELVIEW);
+//	if(!modelViewStack.empty()){
+//		glLoadMatrixf(modelViewStack.top().getPtr());
+//		modelViewStack.pop();
+//	}else{
+//		ofLogError() << "popView: couldn't pop modelView matrix, stack empty. probably wrong anidated push/popView";
+//	}
+	
+	matrixMode(OF_MATRIX_PROJECTION);
+	popMatrix();	// will pop projection matrix
+	matrixMode(OF_MATRIX_MODELVIEW);
+	popMatrix();	// will pop modelview matrix
+
 }
 
 //----------------------------------------------------------
@@ -359,8 +405,8 @@ void ofxGL3Renderer::setupScreenPerspective(float width, float height, ofOrienta
 	if(nearDist == 0) nearDist = dist / 10.0f;
 	if(farDist == 0) farDist = dist * 10.0f;
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	matrixMode(OF_MATRIX_PROJECTION);
+	loadIdentityMatrix();	// WE DON'T NEED THAT.
 		
 	ofMatrix4x4 persp;
 	persp.makePerspectiveMatrix(fov, aspect, nearDist, farDist);
@@ -368,8 +414,8 @@ void ofxGL3Renderer::setupScreenPerspective(float width, float height, ofOrienta
 	//gluPerspective(fov, aspect, nearDist, farDist);
 
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	matrixMode(OF_MATRIX_MODELVIEW);
+	loadIdentityMatrix();	// WE DON'T NEED THAT.
 	
 	ofMatrix4x4 lookAt;
 	lookAt.makeLookAtViewMatrix( ofVec3f(eyeX, eyeY, dist),  ofVec3f(eyeX, eyeY, 0),  ofVec3f(0, 1, 0) );
@@ -379,49 +425,49 @@ void ofxGL3Renderer::setupScreenPerspective(float width, float height, ofOrienta
 	//note - theo checked this on iPhone and Desktop for both vFlip = false and true
 	if(ofDoesHWOrientation()){
 		if(vFlip){
-			glScalef(1, -1, 1);
-			glTranslatef(0, -height, 0);
+			scale(1, -1, 1);
+			translate(0, -height, 0);
 		}
 	}else{
 		if( orientation == OF_ORIENTATION_UNKNOWN ) orientation = ofGetOrientation();
 		switch(orientation) {
 			case OF_ORIENTATION_180:
-				glRotatef(-180, 0, 0, 1);
+				rotate(-180, 0, 0, 1);
 				if(vFlip){
-					glScalef(1, -1, 1);
-					glTranslatef(-width, 0, 0);
+					scale(1, -1, 1);
+					translate(-width, 0, 0);
 				}else{
-					glTranslatef(-width, -height, 0);
+					translate(-width, -height, 0);
 				}
 
 				break;
 
 			case OF_ORIENTATION_90_RIGHT:
-				glRotatef(-90, 0, 0, 1);
+				rotate(-90, 0, 0, 1);
 				if(vFlip){
-					glScalef(-1, 1, 1);
+					scale(-1, 1, 1);
 				}else{
-					glScalef(-1, -1, 1);
-					glTranslatef(0, -height, 0);
+					scale(-1, -1, 1);
+					translate(0, -height, 0);
 				}
 				break;
 
 			case OF_ORIENTATION_90_LEFT:
-				glRotatef(90, 0, 0, 1);
+				rotate(90, 0, 0, 1);
 				if(vFlip){
-					glScalef(-1, 1, 1);
-					glTranslatef(-width, -height, 0);
+					scale(-1, 1, 1);
+					translate(-width, -height, 0);
 				}else{
-					glScalef(-1, -1, 1);
-					glTranslatef(-width, 0, 0);
+					scale(-1, -1, 1);
+					translate(-width, 0, 0);
 				}
 				break;
 
 			case OF_ORIENTATION_DEFAULT:
 			default:
 				if(vFlip){
-					glScalef(1, -1, 1);
-					glTranslatef(0, -height, 0);
+					scale(1, -1, 1);
+					translate(0, -height, 0);
 				}
 				break;
 		}
@@ -509,10 +555,10 @@ void ofxGL3Renderer::setupScreenOrtho(float width, float height, ofOrientation o
 //Resets openGL parameters back to OF defaults
 void ofxGL3Renderer::setupGraphicDefaults(){
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+//	glEnableClientState(GL_VERTEX_ARRAY);
+//	glDisableClientState(GL_NORMAL_ARRAY);
+//	glDisableClientState(GL_COLOR_ARRAY);
+//	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 //----------------------------------------------------------
@@ -623,86 +669,122 @@ void ofxGL3Renderer::setSphereResolution(int res) {
 }
 
 //our openGL wrappers
+
+
+inline void ofxGL3Renderer::applyModelViewProjectionMatrices() {
+	/// tig:
+	// this can be optimised. we really only want to apply these if they have changed.
+	// oh, and we want to cache the uniform locations, eventually.
+	currentShader->setUniformMatrix4f("projectionMatrix", currentProjectionMatrix.getPtr());
+	currentShader->setUniformMatrix4f("modelViewMatrix", currentModelViewMatrix.getPtr());
+}
+
 //----------------------------------------------------------
 void ofxGL3Renderer::pushMatrix(){
-	glPushMatrix();
+	if (currentMatrixMode == OF_MATRIX_MODELVIEW){
+		modelViewMatrixStack.push(currentModelViewMatrix);
+	} else if (currentMatrixMode == OF_MATRIX_PROJECTION){
+		projectionMatrixStack.push(currentProjectionMatrix);
+	} else if (currentMatrixMode == OF_MATRIX_TEXTURE){
+		textureMatrixStack.push(currentTextureMatrix);
+	}
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::popMatrix(){
-	glPopMatrix();
+
+	if (currentMatrixMode == OF_MATRIX_MODELVIEW && !modelViewMatrixStack.empty()){
+		currentModelViewMatrix = modelViewMatrixStack.top();
+		modelViewMatrixStack.pop();
+	} else if (currentMatrixMode == OF_MATRIX_PROJECTION && !projectionMatrixStack.empty()){
+		currentProjectionMatrix = projectionMatrixStack.top();
+		projectionMatrixStack.pop();
+	} else if (currentMatrixMode == OF_MATRIX_TEXTURE && !textureMatrixStack.empty()){
+		currentTextureMatrix = textureMatrixStack.top();
+		textureMatrixStack.pop();
+	} else {
+		ofLogWarning() << "ofxGL3Renderer: Empty matrix stack, cannot pop any further.";
+	}
 }
 
 //----------------------------------------------------------
-void ofxGL3Renderer::translate(const ofPoint& p){
-	glTranslatef(p.x, p.y, p.z);
+void ofxGL3Renderer::translate(const ofVec3f& p){
+	currentMatrix->glTranslate(p);
 }
 
 
 //----------------------------------------------------------
 void ofxGL3Renderer::translate(float x, float y, float z){
-	glTranslatef(x, y, z);
+	currentMatrix->glTranslate(x, y, z);
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::scale(float xAmnt, float yAmnt, float zAmnt){
-	glScalef(xAmnt, yAmnt, zAmnt);
+	currentMatrix->glScale(xAmnt, yAmnt, zAmnt);
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::rotate(float degrees, float vecX, float vecY, float vecZ){
-	glRotatef(degrees, vecX, vecY, vecZ);
+	currentMatrix->glRotate(degrees, vecX, vecY, vecZ);
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::rotateX(float degrees){
-	glRotatef(degrees, 1, 0, 0);
+	currentMatrix->glRotate(degrees, 1, 0, 0);
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::rotateY(float degrees){
-	glRotatef(degrees, 0, 1, 0);
+	currentMatrix->glRotate(degrees, 0, 1, 0);
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::rotateZ(float degrees){
-	glRotatef(degrees, 0, 0, 1);
+	currentMatrix->glRotate(degrees, 0, 0, 1);
 }
 
 //same as ofRotateZ
 //----------------------------------------------------------
 void ofxGL3Renderer::rotate(float degrees){
-	glRotatef(degrees, 0, 0, 1);
+	currentMatrix->glRotate(degrees, 0, 0, 1);
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::matrixMode(ofMatrixMode mode){
-	glMatrixMode(GL_MODELVIEW+mode);
+	currentMatrixMode = mode;
+
+	if (currentMatrixMode == OF_MATRIX_MODELVIEW){
+		currentMatrix = &currentModelViewMatrix;
+	} else if (currentMatrixMode == OF_MATRIX_PROJECTION){
+		currentMatrix = &currentProjectionMatrix;
+	} else if (currentMatrixMode == OF_MATRIX_TEXTURE){
+		currentMatrix = &currentTextureMatrix;
+	}
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::loadIdentityMatrix (void){
-	glLoadIdentity();
+	currentMatrix->makeIdentityMatrix();
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::loadMatrix (const ofMatrix4x4 & m){
-	loadMatrix( m.getPtr() );
+	currentMatrix->set(m);
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::loadMatrix (const float *m){
-	glLoadMatrixf(m);
+	currentMatrix->set(m);
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::multMatrix (const ofMatrix4x4 & m){
-	multMatrix( m.getPtr() );
+	currentMatrix->postMult(m);
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::multMatrix (const float *m){
-	glMultMatrixf(m);
+	currentMatrix->postMult(m);
 }
 
 //----------------------------------------------------------
@@ -834,6 +916,7 @@ void ofxGL3Renderer::startSmoothing(){
 
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glEnable(GL_LINE_SMOOTH);
+	
 
 	//why do we need this?
 	glEnable(GL_BLEND);
@@ -980,13 +1063,22 @@ void ofxGL3Renderer::drawTriangle(float x1, float y1, float z1, float x2, float 
 	triPoints[1].set(x2,y2,z2);
 	triPoints[2].set(x3,y3,z3);
 
+	
 	// use smoothness, if requested:
 	if (bSmoothHinted && bFilled == OF_OUTLINE) startSmoothing();
+	triangleVbo.setVertexData(&triPoints[0], 3, GL_DYNAMIC_DRAW);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), &triPoints[0].x);
+	applyModelViewProjectionMatrices();
+	
+	glBindBuffer(GL_ARRAY_BUFFER, triangleVbo.getVertId()); // bind to triangle vertices
+	glEnableVertexAttribArray(0);							// activate attribute 0 in shader
+	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,0);
+	
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, 3);
 
+	glDisableVertexAttribArray(0);			// disable vertex attrib array.
+	glBindBuffer(GL_ARRAY_BUFFER,0);		// unbind by binding to zero
+	
 	// use smoothness, if requested:
 	if (bSmoothHinted && bFilled == OF_OUTLINE) endSmoothing();
 
@@ -1001,10 +1093,11 @@ void ofxGL3Renderer::drawCircle(float x, float y, float z,  float radius){
 
 	circleVbo.setVertexData(&circlePoints[0].x, 3, circlePoints.size(), GL_DYNAMIC_DRAW, sizeof(ofVec3f));
 
-	glBindBuffer(GL_ARRAY_BUFFER,circleVbo.getVertId());		// bind the circle vertex vbo
+	applyModelViewProjectionMatrices();
+	
+	glBindBuffer(GL_ARRAY_BUFFER, circleVbo.getVertId());		// bind the circle vertex vbo
 	glEnableVertexAttribArray(0);								// we assume vertex data goes in attribute position zero on the current vertex shader
 	glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,0);
-	
 	
 	// DRAW !!!
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_FAN : GL_LINE_STRIP, 0, circlePoints.size());
@@ -1041,6 +1134,9 @@ void ofxGL3Renderer::drawEllipse(float x, float y, float z, float width, float h
 		circlePoints[i].set(radiusX*circlePolyline[i].x+x,radiusY*circlePolyline[i].y+y,z);
 	}
 
+	currentShader->setUniformMatrix4f("modelViewMatrix", currentModelViewMatrix.getPtr());
+	currentShader->setUniformMatrix4f("projectionMatrix", currentProjectionMatrix.getPtr());
+	
 	// use smoothness, if requested:
 	if (bSmoothHinted && bFilled == OF_OUTLINE) startSmoothing();
 

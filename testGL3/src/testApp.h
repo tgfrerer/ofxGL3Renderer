@@ -5,7 +5,7 @@
 
 class testApp : public ofBaseApp{
 
-	ofShader	mPassThrough;
+	ofPtr<ofShader>	mPassThrough;
 	ofMatrix4x4 mModelview;
 	ofMatrix4x4 mProjection;
 

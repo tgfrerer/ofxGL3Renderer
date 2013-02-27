@@ -217,7 +217,10 @@ static void update_mesh(void)
 void testApp::setup(){
 	
 	glGetError();
-	string result = (mPassThrough.load("passthrough")) ? "OK" : "NOPE";
+	
+	mPassThrough = ofPtr<ofShader>(new ofShader);
+	
+	string result = (mPassThrough->load("passthrough")) ? "OK" : "NOPE";
 	ofLogNotice() << result;
 	
 	GL3Renderer = ofPtr<ofxGL3Renderer>(new ofxGL3Renderer());
@@ -229,7 +232,7 @@ void testApp::setup(){
 	mModelview.translate(-5, -5, -20);
 	
 	init_map();
-	make_mesh(mPassThrough.getProgram());
+	make_mesh(mPassThrough->getProgram());
 	mCam1.setupPerspective(false, 60, 0.1, 200);
 	mCam1.setGlobalPosition(5, 5, 20);
 
@@ -246,8 +249,8 @@ void testApp::setup(){
 	mCam1.setTranslationKey('m');
 	mCam1.setDistance(20);
 
-	mPassThrough.printActiveAttributes();
-	mPassThrough.printActiveUniforms();
+	mPassThrough->printActiveAttributes();
+	mPassThrough->printActiveUniforms();
 
 }
 
@@ -261,24 +264,28 @@ void testApp::draw(){
 
 	mCam1.begin();
 	
-	mPassThrough.begin();
-
-	mPassThrough.setUniformMatrix4f("modelview", mCam1.getModelViewMatrix());
-	mPassThrough.setUniformMatrix4f("project", mCam1.getProjectionMatrix());
+	GL3Renderer->beginShader(mPassThrough);
 	
 	ofClear(0,0,0);
-	
-	// glDrawElements(GL_LINES, 2* MAP_NUM_LINES , GL_UNSIGNED_INT, 0);
-	
+
 	ofFill();
+	
+	ofPushMatrix();
+	ofTranslate(-3, 0);
 	ofCircle(0, 0, 5);
+	ofPopMatrix();
+	
 	ofNoFill();
+
+	ofPushMatrix();
+	ofTranslate(-3, 0);
 	ofCircle(0, 0, 6);
+	ofPopMatrix();
 	
-//	ofSetColor(255, 0, 0);
-//	ofCircle(200,200,40);
+	ofTriangle(ofVec3f(0,0), ofVec3f(7,0), ofVec3f(0,7));
 	
-	mPassThrough.end();
+	GL3Renderer->endShader();
+//	mPassThrough.end();
 	mCam1.end();
 
 }
