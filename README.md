@@ -45,5 +45,6 @@ Play around with this at your own peril.
 
 to build on os x all should be set.
 
-to build on linux all should be set, too, use freshest openframeworks dev branch from git @ hash bbe2e01d142c2ec1ea89e9850ba79d6773fbc7b8 - remember to recompile openframeworksCompiled if pulling in new openframeworks dev branch code.
+to build on linux using makefiles all should be set, too, use freshest openframeworks dev branch from git @ hash bbe2e01d142c2ec1ea89e9850ba79d6773fbc7b8 - remember to recompile openframeworksCompiled if pulling in new openframeworks dev branch code. 
 
+to use the sublimeproject files, the project files need to be updated to point to the correct absolute paths, where absolute paths are given in the .sublime-project file.
