@@ -177,6 +177,7 @@ private:
 	
 	ofVbo circleVbo;
 	ofVbo triangleVbo;
+	ofVbo rectVbo;
 	
 	ofPolyline circlePolyline;
 	

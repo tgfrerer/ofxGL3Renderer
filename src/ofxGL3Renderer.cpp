@@ -1092,12 +1092,23 @@ void ofxGL3Renderer::drawRectangle(float x, float y, float z,float w, float h){
 		rectPoints[3].set(x-w/2.0f, y+h/2.0f, z);
 	}
 
+	// bind vertex array
+	glBindVertexArray(defaultVAO);
+
+	rectVbo.setVertexData(&rectPoints[0], 4, GL_DYNAMIC_DRAW);
+	
+
 	// use smoothness, if requested:
 	if (bSmoothHinted && bFilled == OF_OUTLINE) startSmoothing();
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), &rectPoints[0].x);
+	glBindBuffer(GL_ARRAY_BUFFER, rectVbo.getVertId()); // bind to triangle vertices
+	glEnableVertexAttribArray(0);							// activate attribute 0 in shader
+	glVertexAttribPointer(shaderLocCache.locAttributeVVertex, 3, GL_FLOAT,GL_FALSE,0,0);
+	
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, 4);
+	
+	glDisableVertexAttribArray(0);			// disable vertex attrib array.
+	glBindBuffer(GL_ARRAY_BUFFER,0);		// unbind by binding to zero
 
 	// use smoothness, if requested:
 	if (bSmoothHinted && bFilled == OF_OUTLINE) endSmoothing();
