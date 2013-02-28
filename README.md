@@ -5,7 +5,7 @@ EXPERIMENTAL OpenGL3.2 context for openframeworks using glfw3. Currently Mac-Ony
 
 # WARNING
 
-This will blow up in your face, hide vertices everywhere and steal your lunch money.
+This will blow up in your face, possibly leak memory like a whole geriatric ward - and steal your lunch money.
 
 Consider it about as stable as a drunk giraffe on a tightrope.
 

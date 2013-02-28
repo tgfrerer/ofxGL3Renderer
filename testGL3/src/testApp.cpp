@@ -43,6 +43,7 @@ void testApp::draw(){
 	ofClear(0,0,0);
 	
 	ofFill();
+	ofSetColor(255,0,0);
 	
 	ofPushMatrix();
 	ofTranslate(-4, 0);
@@ -51,21 +52,25 @@ void testApp::draw(){
 	ofNoFill();
 	ofPushMatrix();
 	ofTranslate(-4, 0);
+	ofSetColor(0,255,0);
 	ofCircle(0, 0, 6);
 	ofPopMatrix();
 	
 	ofPushMatrix();
 	ofPushMatrix();
 	ofTranslate(3, -6);
+	ofSetColor(0,0,255);
 	ofRect(0, 0, 4, 12);
 	ofPopMatrix();
 	
 	ofPushMatrix();
 	ofTranslate(8, -2);
+	ofSetColor(0,255,255);
 	ofRect(0, 0, 3, 3);
 	ofPopMatrix();
 	
 	ofTranslate(8, 2);
+	ofSetColor(255,255,255);
 	ofTriangle(ofVec3f(0,4), ofVec3f(0,0), ofVec3f(4,4));
 	ofPopMatrix();
 	

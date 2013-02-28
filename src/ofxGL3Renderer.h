@@ -16,14 +16,20 @@ class ofxGL3Renderer: public ofBaseRenderer{
 	shaderP_t currentShader;
 	
 	void shaderSetupModelViewProjectionMatrices();
-	void shaderApplyModelViewProjectionMatrices();
+	void shaderUploadModelViewProjectionMatrices();
+
+	ofFloatColor fgColor;
+	
+	void shaderSetupColor();
+	void shaderUploadColor();
 	
 	GLuint defaultVAO;
 	
 	struct {
 		GLuint locUniformProjectionMatrix;
 		GLuint locUniformModelViewMatrix;
-		GLuint locAttributeVVertex;
+		GLuint locUniformColor;
+		GLuint locAttributePosition;
 	} shaderLocCache;
 	
 	

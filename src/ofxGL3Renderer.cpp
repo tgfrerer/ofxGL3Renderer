@@ -24,6 +24,7 @@ ofxGL3Renderer::ofxGL3Renderer(bool useShapeColor)
 	
 	glGenVertexArrays(1, &defaultVAO);	// generate one default VAO into which we can store the VBOs for our built-in primitives.
 	
+	fgColor = ofColor(255);
 }
 
 //----------------------------------------------------------
@@ -57,7 +58,8 @@ void ofxGL3Renderer::beginShader(shaderP_t shader_){
 		// get attribute locations and cache them.
 		shaderLocCache.locUniformProjectionMatrix	= glGetUniformLocation(shaderProg, "projectionMatrix");
 		shaderLocCache.locUniformModelViewMatrix	= glGetUniformLocation(shaderProg, "modelViewMatrix");
-		shaderLocCache.locAttributeVVertex			= glGetAttribLocation(shaderProg, "vVertex");
+		shaderLocCache.locUniformColor				= glGetUniformLocation(shaderProg, "uColor");
+		shaderLocCache.locAttributePosition			= glGetAttribLocation(shaderProg, "position");
 	}
 
 	currentShader = shader_;
@@ -65,6 +67,7 @@ void ofxGL3Renderer::beginShader(shaderP_t shader_){
 	currentShader->begin();
 	// this will preset the current shader with the current matrices
 	shaderSetupModelViewProjectionMatrices();
+	shaderSetupColor();
 }
 
 // ----------------------------------------------------------------------
@@ -702,7 +705,21 @@ inline void ofxGL3Renderer::shaderSetupModelViewProjectionMatrices() {
 
 // ----------------------------------------------------------------------
 
-inline void ofxGL3Renderer::shaderApplyModelViewProjectionMatrices(){
+inline void ofxGL3Renderer::shaderSetupColor(){
+	
+	glUniform4fv(shaderLocCache.locUniformColor, 1, &fgColor.r);
+
+}
+
+// ----------------------------------------------------------------------
+
+inline void ofxGL3Renderer::shaderUploadColor(){
+	glUniform4fv(shaderLocCache.locUniformColor, 1, &fgColor.r);
+}
+
+// ----------------------------------------------------------------------
+
+inline void ofxGL3Renderer::shaderUploadModelViewProjectionMatrices(){
 	if (currentShader.get()==NULL) return;
 	// apply current matrix to current shader, using cached unform locations
 	if (currentMatrixMode == OF_MATRIX_PROJECTION) 	glUniformMatrix4fv(shaderLocCache.locUniformProjectionMatrix, 1, GL_FALSE, currentProjectionMatrix.getPtr());
@@ -720,7 +737,7 @@ void ofxGL3Renderer::pushMatrix(){
 	} else if (currentMatrixMode == OF_MATRIX_TEXTURE){
 		textureMatrixStack.push(currentTextureMatrix);
 	}
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
@@ -738,57 +755,57 @@ void ofxGL3Renderer::popMatrix(){
 	} else {
 		ofLogWarning() << "ofxGL3Renderer: Empty matrix stack, cannot pop any further.";
 	}
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::translate(const ofVec3f& p){
 	currentMatrix->glTranslate(p);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 
 //----------------------------------------------------------
 void ofxGL3Renderer::translate(float x, float y, float z){
 	currentMatrix->glTranslate(x, y, z);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::scale(float xAmnt, float yAmnt, float zAmnt){
 	currentMatrix->glScale(xAmnt, yAmnt, zAmnt);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::rotate(float degrees, float vecX, float vecY, float vecZ){
 	currentMatrix->glRotate(degrees, vecX, vecY, vecZ);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::rotateX(float degrees){
 	currentMatrix->glRotate(degrees, 1, 0, 0);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::rotateY(float degrees){
 	currentMatrix->glRotate(degrees, 0, 1, 0);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::rotateZ(float degrees){
 	currentMatrix->glRotate(degrees, 0, 0, 1);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //same as ofRotateZ
 //----------------------------------------------------------
 void ofxGL3Renderer::rotate(float degrees){
 	currentMatrix->glRotate(degrees, 0, 0, 1);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
@@ -807,31 +824,31 @@ void ofxGL3Renderer::matrixMode(ofMatrixMode mode){
 //----------------------------------------------------------
 void ofxGL3Renderer::loadIdentityMatrix (void){
 	currentMatrix->makeIdentityMatrix();
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::loadMatrix (const ofMatrix4x4 & m){
 	currentMatrix->set(m);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::loadMatrix (const float *m){
 	currentMatrix->set(m);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::multMatrix (const ofMatrix4x4 & m){
 	currentMatrix->preMult(m);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
 void ofxGL3Renderer::multMatrix (const float *m){
 	currentMatrix->preMult(m);
-	shaderApplyModelViewProjectionMatrices();
+	shaderUploadModelViewProjectionMatrices();
 }
 
 //----------------------------------------------------------
@@ -846,13 +863,15 @@ void ofxGL3Renderer::setColor(const ofColor & color, int _a){
 
 //----------------------------------------------------------
 void ofxGL3Renderer::setColor(int _r, int _g, int _b){
-	glColor4f(_r/255.f,_g/255.f,_b/255.f,1.f);
+	fgColor.set(_r/255.f,_g/255.f,_b/255.f,1.0f);
+	shaderUploadColor();
 }
 
 
 //----------------------------------------------------------
 void ofxGL3Renderer::setColor(int _r, int _g, int _b, int _a){
-	glColor4f(_r/255.f,_g/255.f,_b/255.f,_a/255.f);
+	fgColor.set(_r/255.f,_g/255.f,_b/255.f,_a/255.f);
+	shaderUploadColor();
 }
 
 //----------------------------------------------------------
@@ -1103,7 +1122,7 @@ void ofxGL3Renderer::drawRectangle(float x, float y, float z,float w, float h){
 
 	glBindBuffer(GL_ARRAY_BUFFER, rectVbo.getVertId()); // bind to triangle vertices
 	glEnableVertexAttribArray(0);							// activate attribute 0 in shader
-	glVertexAttribPointer(shaderLocCache.locAttributeVVertex, 3, GL_FLOAT,GL_FALSE,0,0);
+	glVertexAttribPointer(shaderLocCache.locAttributePosition, 3, GL_FLOAT,GL_FALSE,0,0);
 	
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, 4);
 	
@@ -1128,12 +1147,10 @@ void ofxGL3Renderer::drawTriangle(float x1, float y1, float z1, float x2, float 
 	if (bSmoothHinted && bFilled == OF_OUTLINE) startSmoothing();
 	triangleVbo.setVertexData(&triPoints[0], 3, GL_DYNAMIC_DRAW);
 
-//	applyModelViewProjectionMatrices();
-
 	
 	glBindBuffer(GL_ARRAY_BUFFER, triangleVbo.getVertId()); // bind to triangle vertices
 	glEnableVertexAttribArray(0);							// activate attribute 0 in shader
-	glVertexAttribPointer(shaderLocCache.locAttributeVVertex,3,GL_FLOAT,GL_FALSE,0,0);
+	glVertexAttribPointer(shaderLocCache.locAttributePosition,3,GL_FLOAT,GL_FALSE,0,0);
 	
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, 3);
 
@@ -1159,7 +1176,7 @@ void ofxGL3Renderer::drawCircle(float x, float y, float z,  float radius){
 
 	glBindBuffer(GL_ARRAY_BUFFER, circleVbo.getVertId());		// bind the circle vertex vbo
 	glEnableVertexAttribArray(0);								// we assume vertex data goes in attribute position zero on the current vertex shader
-	glVertexAttribPointer(shaderLocCache.locAttributeVVertex, 3,GL_FLOAT,GL_FALSE,0,0);
+	glVertexAttribPointer(shaderLocCache.locAttributePosition, 3,GL_FLOAT,GL_FALSE,0,0);
 	
 	// DRAW !!!
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_FAN : GL_LINE_STRIP, 0, circlePoints.size());

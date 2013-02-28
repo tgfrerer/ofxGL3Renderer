@@ -2,11 +2,14 @@
 
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
+uniform vec4 uColor;
 
 
-in vec4 vVertex;
+in vec4  position;
+out vec4 vertColor;
 
 void main()
 {
-   gl_Position = projectionMatrix * modelViewMatrix * vVertex;
+	vertColor = uColor;
+	gl_Position = projectionMatrix * modelViewMatrix * position;
 }
