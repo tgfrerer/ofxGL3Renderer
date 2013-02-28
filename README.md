@@ -38,7 +38,7 @@ Play around with this at your own peril.
 ![image](http://poniesandlight.com/static/screenshot_gl3_renderer.png "ofxGL3Renderer on OS X")
 
 ### Linux (Arch Linux 64bit)
-![image](http://poniesandlight.com/static/screenshot_gl3_renderer_linux.png "ofxGL3Renderer on Linux")
+![image](http://poniesandlight.com/static/screenshot_gl3_renderer_linux2.png "ofxGL3Renderer on Linux")
 
 
 # build notes 
