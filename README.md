@@ -15,6 +15,12 @@ Play around with this at your own peril.
 
 1. Creates an openGL 3.2 context successfully on mac
 2. GLSL 150 seems to work
+3. we haz success! works on arch linux64:
+	Vendor:   NVIDIA Corporation
+	Renderer: GeForce 9600M GT/PCIe/SSE2
+	Version:  3.2.0 NVIDIA 310.19
+	GLSL:     1.50 NVIDIA via Cg compiler
+
 
 ## things that *seem* to work w / ofxGL3Renderer::
 
@@ -29,4 +35,8 @@ Play around with this at your own peril.
 
 ## screenshot
 
+### OS X 
 ![image](http://poniesandlight.com/static/screenshot_gl3_renderer.png "ofxGL3Renderer")
+
+### Linux (Arch Linux 64bit)
+![image](http://poniesandlight.com/static/screenshot_gl3_renderer_linux.png "ofxGL3Renderer")
