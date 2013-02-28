@@ -15,9 +15,16 @@ class ofxGL3Renderer: public ofBaseRenderer{
 	typedef ofPtr<ofShader> shaderP_t;
 	shaderP_t currentShader;
 	
-	void applyModelViewProjectionMatrices();
+	void shaderSetupModelViewProjectionMatrices();
+	void shaderApplyModelViewProjectionMatrices();
 	
 	GLuint defaultVAO;
+	
+	struct {
+		GLuint locUniformProjectionMatrix;
+		GLuint locUniformModelViewMatrix;
+		GLuint locAttributeVVertex;
+	} shaderLocCache;
 	
 	
 public:
