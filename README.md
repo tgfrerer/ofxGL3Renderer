@@ -1,7 +1,7 @@
 ofxGL3Renderer
 ==============
 
-EXPERIMENTAL opengl3.2 context for openframeworks using glfw3. Currently Mac-Ony, but with an eye to multiplatform, using GLFW3 
+EXPERIMENTAL OpenGL3.2 context for openframeworks using glfw3. Currently Mac-Ony, but with an eye to multiplatform, using GLFW3 
 
 # WARNING
 
@@ -18,11 +18,15 @@ Play around with this at your own peril.
 
 ## things that *seem* to work w / ofxGL3Renderer::
 
-0. ofCamera
-1. ofCircle()
-2. ofTriangle()
-3. ofPushMatrix()
-4. ofPopMatrix()
-5. ofTranslate()
-6. ofScale()
-7. ofMultMatrix()
+* ofCamera use and operations.
+* ofCircle()
+* ofTriangle()
+* ofRect()
+* of*Matrix()
+* ofTranslate()
+* ofScale()
+* ofRotate*()
+
+## screenshot
+
+![image](http://poniesandlight.com/static/screenshot_gl3_renderer.png "ofxGL3Renderer")
