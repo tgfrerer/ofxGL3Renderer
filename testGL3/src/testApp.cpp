@@ -8,28 +8,23 @@ void testApp::setup(){
 	
 	mPassThrough = ofPtr<ofShader>(new ofShader);
 	
-	string result = (mPassThrough->load("passthrough")) ? "OK" : "NOPE";
+	string result = (mPassThrough->load("passthrough")) ? "Loaded passthrough shader successfully" : "Awww. problem loading passthrough shader.";
 	ofLogNotice() << result;
 	
 	GL3Renderer = ofPtr<ofxGL3Renderer>(new ofxGL3Renderer());
 	
 	ofSetCurrentRenderer(GL3Renderer);
 	
-	mProjection.makePerspectiveMatrix(60, ofGetWidth()/(float)ofGetHeight(), 0.1, 200);
-	mModelview.makeIdentityMatrix();
-	mModelview.translate(-5, -5, -20);
-	
 	mCam1.setupPerspective(false, 60, 0.1, 200);
 	mCam1.setGlobalPosition(5, 5, 20);
-
 	
 	mCam1.disableMouseInput();
 	mCam1.enableMouseInput();
 	mCam1.setTranslationKey('m');
 	mCam1.setDistance(20);
 
-	mPassThrough->printActiveAttributes();
-	mPassThrough->printActiveUniforms();
+//	mPassThrough->printActiveAttributes();
+//	mPassThrough->printActiveUniforms();
 
 }
 
@@ -46,22 +41,33 @@ void testApp::draw(){
 	GL3Renderer->beginShader(mPassThrough);
 	
 	ofClear(0,0,0);
-
+	
 	ofFill();
 	
 	ofPushMatrix();
-	ofTranslate(-3, 0);
+	ofTranslate(-4, 0);
 	ofCircle(0, 0, 5);
 	ofPopMatrix();
-	
 	ofNoFill();
-
 	ofPushMatrix();
-	ofTranslate(-3, 0);
+	ofTranslate(-4, 0);
 	ofCircle(0, 0, 6);
 	ofPopMatrix();
 	
-	ofTriangle(ofVec3f(0,0), ofVec3f(7,0), ofVec3f(0,7));
+	ofPushMatrix();
+	ofPushMatrix();
+	ofTranslate(3, -6);
+	ofRect(0, 0, 4, 12);
+	ofPopMatrix();
+	
+	ofPushMatrix();
+	ofTranslate(8, -2);
+	ofRect(0, 0, 3, 3);
+	ofPopMatrix();
+	
+	ofTranslate(8, 2);
+	ofTriangle(ofVec3f(0,4), ofVec3f(0,0), ofVec3f(4,4));
+	ofPopMatrix();
 	
 	GL3Renderer->endShader();
 	mCam1.end();
