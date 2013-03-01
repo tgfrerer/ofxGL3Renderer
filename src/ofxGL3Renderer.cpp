@@ -144,31 +144,25 @@ void ofxGL3Renderer::draw(ofMesh & vertexData, ofPolyRenderMode renderType, bool
 }
 
 // ----------------------------------------------------------------------
-#pragma mark - TODO (draw vertex data)
+#pragma mark - CHECK (draw vertex data)
 
 void ofxGL3Renderer::draw(vector<ofVec3f> & vertexData, ofPrimitiveMode drawMode){
 	if(!vertexData.empty()) {
-		if (bSmoothHinted) startSmoothing();
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), &vertexData[0].x);
+		vertexDataVbo.setVertexData(&vertexData[0], vertexData.size(), GL_DYNAMIC_DRAW);
+		preparePrimitiveDraw(vertexDataVbo);
 		glDrawArrays(ofGetGLPrimitiveMode(drawMode), 0, vertexData.size());
-		if (bSmoothHinted) endSmoothing();
+		finishPrimitiveDraw();
 	}
 }
 
 // ----------------------------------------------------------------------
-#pragma mark - TODO (draw ofPolyline)
+#pragma mark - CHECK (draw ofPolyline)
 void ofxGL3Renderer::draw(ofPolyline & poly){
 	if(!poly.getVertices().empty()) {
-		// use smoothness, if requested:
-		if (bSmoothHinted) startSmoothing();
-
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), &poly.getVertices()[0].x);
+		vertexDataVbo.setVertexData(&poly.getVertices()[0], poly.size(), GL_DYNAMIC_DRAW);
+		preparePrimitiveDraw(vertexDataVbo);
 		glDrawArrays(poly.isClosed()?GL_LINE_LOOP:GL_LINE_STRIP, 0, poly.size());
-
-		// use smoothness, if requested:
-		if (bSmoothHinted) endSmoothing();
+		finishPrimitiveDraw();
 	}
 }
 

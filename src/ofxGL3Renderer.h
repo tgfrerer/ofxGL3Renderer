@@ -24,6 +24,13 @@ class ofxGL3Renderer: public ofBaseRenderer{
 	void shaderUploadColor();
 	
 	GLuint defaultVAO;
+
+	ofVbo circleVbo;
+	ofVbo triangleVbo;
+	ofVbo rectVbo;
+	ofVbo lineVbo;
+	ofVbo vertexDataVbo;
+	
 	
 	struct {
 		GLuint locUniformProjectionMatrix;
@@ -182,10 +189,6 @@ private:
 	vector<ofVec3f> triPoints;
 	vector<ofVec3f> circlePoints;
 	
-	ofVbo circleVbo;
-	ofVbo triangleVbo;
-	ofVbo rectVbo;
-	ofVbo lineVbo;
 	
 	ofPolyline circlePolyline;
 	
