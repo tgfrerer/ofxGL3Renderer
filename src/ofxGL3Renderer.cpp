@@ -25,6 +25,8 @@ ofxGL3Renderer::ofxGL3Renderer(bool useShapeColor)
 	
 	glGenVertexArrays(1, &defaultVAO);	// generate one default VAO into which we can store the VBOs for our built-in primitives.
 	
+
+	
 	fgColor = ofColor(255);
 }
 
@@ -144,7 +146,7 @@ void ofxGL3Renderer::draw(ofMesh & vertexData, ofPolyRenderMode renderType, bool
 // ----------------------------------------------------------------------
 #pragma mark - TODO (draw vertex data)
 
-void ofxGL3Renderer::draw(vector<ofPoint> & vertexData, ofPrimitiveMode drawMode){
+void ofxGL3Renderer::draw(vector<ofVec3f> & vertexData, ofPrimitiveMode drawMode){
 	if(!vertexData.empty()) {
 		if (bSmoothHinted) startSmoothing();
 		glEnableClientState(GL_VERTEX_ARRAY);
@@ -649,6 +651,9 @@ void ofxGL3Renderer::beginShader(shaderP_t shader_){
 		shaderLocCache.locUniformModelViewMatrix	= glGetUniformLocation(shaderProg, "modelViewMatrix");
 		shaderLocCache.locUniformColor				= glGetUniformLocation(shaderProg, "uColor");
 		shaderLocCache.locAttributePosition			= glGetAttribLocation(shaderProg, "position");
+		
+		glBindVertexArray(defaultVAO);
+		glBindVertexArray(0);
 	}
 	
 	currentShader = shader_;
@@ -696,7 +701,7 @@ inline void ofxGL3Renderer::shaderUploadModelViewProjectionMatrices(){
 }
 
 // ----------------------------------------------------------------------
-#pragma mark- Matrix Stack Operations
+#pragma mark- Matrix Stack Operators
 // ----------------------------------------------------------------------
 
 void ofxGL3Renderer::pushMatrix(){
@@ -834,6 +839,8 @@ void ofxGL3Renderer::multMatrix (const float *m){
 }
 
 // ----------------------------------------------------------------------
+#pragma mark- Color Operators
+// ----------------------------------------------------------------------
 
 void ofxGL3Renderer::setColor(const ofColor & color){
 	setColor(color.r,color.g,color.b,color.a);
@@ -874,6 +881,9 @@ void ofxGL3Renderer::setHexColor(int hexColor){
 	setColor(r,g,b);
 }
 
+
+// ----------------------------------------------------------------------
+#pragma mark- Clear / Background Methods
 // ----------------------------------------------------------------------
 
 void ofxGL3Renderer::clear(float r, float g, float b, float a) {
@@ -1061,21 +1071,33 @@ void ofxGL3Renderer::disablePointSprites(){
 }
 
 // ----------------------------------------------------------------------
+#pragma mark- Primitive Draw Methods
+// ----------------------------------------------------------------------
 #pragma mark- TODO: DRAW LINE
 void ofxGL3Renderer::drawLine(float x1, float y1, float z1, float x2, float y2, float z2){
 	linePoints[0].set(x1,y1,z1);
-	linePoints[1].set(x2,y2,z2);
-
-	// use smoothness, if requested:
-	if (bSmoothHinted) startSmoothing();
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), &linePoints[0].x);
+	linePoints[1].set(x2,y2, z2);
+	lineVbo.setVertexData(&linePoints[0], 2, GL_DYNAMIC_DRAW);
+	preparePrimitiveDraw(lineVbo);
 	glDrawArrays(GL_LINES, 0, 2);
+	finishPrimitiveDraw();
+}
 
-	// use smoothness, if requested:
-	if (bSmoothHinted) endSmoothing();
+// ----------------------------------------------------------------------
 
+inline void ofxGL3Renderer::preparePrimitiveDraw(ofVbo& vbo_){
+	// bind vertex array
+	glBindVertexArray(defaultVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo_.getVertId()); // bind to triangle vertices
+	glEnableVertexAttribArray(shaderLocCache.locAttributePosition);	// activate attribute 0 in shader
+	glVertexAttribPointer(shaderLocCache.locAttributePosition, 3, GL_FLOAT,GL_FALSE,0,0);
+
+}
+
+inline void ofxGL3Renderer::finishPrimitiveDraw(){
+	// ubind, basically.
+	glDisableVertexAttribArray(0);			// disable vertex attrib array.
+	glBindBuffer(GL_ARRAY_BUFFER,0);		// unbind by binding to zero
 }
 
 // ----------------------------------------------------------------------
@@ -1094,25 +1116,11 @@ void ofxGL3Renderer::drawRectangle(float x, float y, float z,float w, float h){
 		rectPoints[3].set(x-w/2.0f, y+h/2.0f, z);
 	}
 
-	// bind vertex array
-	glBindVertexArray(defaultVAO);
-
 	rectVbo.setVertexData(&rectPoints[0], 4, GL_DYNAMIC_DRAW);
 
-	// use smoothness, if requested:
-	if (bSmoothHinted && bFilled == OF_OUTLINE) startSmoothing();
-
-	glBindBuffer(GL_ARRAY_BUFFER, rectVbo.getVertId()); // bind to triangle vertices
-	glEnableVertexAttribArray(0);							// activate attribute 0 in shader
-	glVertexAttribPointer(shaderLocCache.locAttributePosition, 3, GL_FLOAT,GL_FALSE,0,0);
-	
+	preparePrimitiveDraw(rectVbo);
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, 4);
-	
-	glDisableVertexAttribArray(0);			// disable vertex attrib array.
-	glBindBuffer(GL_ARRAY_BUFFER,0);		// unbind by binding to zero
-
-	// use smoothness, if requested:
-	if (bSmoothHinted && bFilled == OF_OUTLINE) endSmoothing();
+	finishPrimitiveDraw();
 
 }
 
@@ -1123,52 +1131,29 @@ void ofxGL3Renderer::drawTriangle(float x1, float y1, float z1, float x2, float 
 	triPoints[1].set(x2,y2,z2);
 	triPoints[2].set(x3,y3,z3);
 
-	// bind vertex array
-	glBindVertexArray(defaultVAO);
 	
-	// use smoothness, if requested:
-	if (bSmoothHinted && bFilled == OF_OUTLINE) startSmoothing();
 	triangleVbo.setVertexData(&triPoints[0], 3, GL_DYNAMIC_DRAW);
 
-	
-	glBindBuffer(GL_ARRAY_BUFFER, triangleVbo.getVertId()); // bind to triangle vertices
-	glEnableVertexAttribArray(0);							// activate attribute 0 in shader
-	glVertexAttribPointer(shaderLocCache.locAttributePosition,3,GL_FLOAT,GL_FALSE,0,0);
-	
+	preparePrimitiveDraw(triangleVbo);
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_STRIP : GL_LINE_LOOP, 0, 3);
-
-	glDisableVertexAttribArray(0);			// disable vertex attrib array.
-	glBindBuffer(GL_ARRAY_BUFFER,0);		// unbind by binding to zero
-	
-	// use smoothness, if requested:
-	if (bSmoothHinted && bFilled == OF_OUTLINE) endSmoothing();
+	finishPrimitiveDraw();
 
 }
 
 // ----------------------------------------------------------------------
 
 void ofxGL3Renderer::drawCircle(float x, float y, float z,  float radius){
-	vector<ofPoint> & circleCache = circlePolyline.getVertices();
+	vector<ofVec3f> & circleCache = circlePolyline.getVertices();
 	for(int i=0;i<(int)circleCache.size();i++){
 		circlePoints[i].set(radius*circleCache[i].x+x,radius*circleCache[i].y+y,z);
 	}
 
-	// bind default vertex array
-	glBindVertexArray(defaultVAO);
-
 	circleVbo.setVertexData(&circlePoints[0].x, 3, circlePoints.size(), GL_DYNAMIC_DRAW, sizeof(ofVec3f));
 
-	glBindBuffer(GL_ARRAY_BUFFER, circleVbo.getVertId());		// bind the circle vertex vbo
-	glEnableVertexAttribArray(0);								// we assume vertex data goes in attribute position zero on the current vertex shader
-	glVertexAttribPointer(shaderLocCache.locAttributePosition, 3,GL_FLOAT,GL_FALSE,0,0);
-	
-	// DRAW !!!
+	preparePrimitiveDraw(circleVbo);
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_FAN : GL_LINE_STRIP, 0, circlePoints.size());
-
-	glDisableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);							// unbind the circle vertex vbo
-	// use smoothness, if requested:
-	if (bSmoothHinted && bFilled == OF_OUTLINE) endSmoothing();
+	finishPrimitiveDraw();
+	
 
 }
 
@@ -1194,7 +1179,7 @@ void ofxGL3Renderer::drawSphere(float x, float y, float z, float radius) {
 void ofxGL3Renderer::drawEllipse(float x, float y, float z, float width, float height){
 	float radiusX = width*0.5;
 	float radiusY = height*0.5;
-	vector<ofPoint> & circleCache = circlePolyline.getVertices();
+	vector<ofVec3f> & circleCache = circlePolyline.getVertices();
 	for(int i=0;i<(int)circleCache.size();i++){
 		circlePoints[i].set(radiusX*circlePolyline[i].x+x,radiusY*circlePolyline[i].y+y,z);
 	}
@@ -1289,7 +1274,7 @@ void ofxGL3Renderer::drawString(string textString, float x, float y, float z, of
 			hasModelView = true;
 			glMatrixMode(GL_MODELVIEW);
 			glPushMatrix();
-			glLoadIdentity();
+			loadIdentityMatrix();
 
 			glTranslatef(-1, 1, 0);
 			glScalef(2/rViewport.width, -2/rViewport.height, 1);

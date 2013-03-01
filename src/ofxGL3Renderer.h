@@ -32,6 +32,8 @@ class ofxGL3Renderer: public ofBaseRenderer{
 		GLuint locAttributePosition;
 	} shaderLocCache;
 	
+	void preparePrimitiveDraw(ofVbo& vbo);
+	void finishPrimitiveDraw();
 	
 public:
 	ofxGL3Renderer(bool useShapeColor=true);
@@ -46,7 +48,7 @@ public:
 	void draw(ofMesh & vertexData, ofPolyRenderMode renderType, bool useColors=true, bool useTextures = true, bool useNormals=true);
 	void draw(ofPolyline & poly);
 	void draw(ofPath & path);
-	void draw(vector<ofPoint> & vertexData, ofPrimitiveMode drawMode);
+	void draw(vector<ofVec3f> & vertexData, ofPrimitiveMode drawMode);
 	void draw(ofImage & image, float x, float y, float z, float w, float h, float sx, float sy, float sw, float sh);
 	void draw(ofFloatImage & image, float x, float y, float z, float w, float h, float sx, float sy, float sw, float sh);
 	void draw(ofShortImage & image, float x, float y, float z, float w, float h, float sx, float sy, float sw, float sh);
@@ -86,7 +88,7 @@ public:
 	void pushMatrix();
 	void popMatrix();
 	void translate(float x, float y, float z = 0);
-	void translate(const ofPoint & p);
+	void translate(const ofVec3f & p);
 	void scale(float xAmnt, float yAmnt, float zAmnt = 1);
 	void rotate(float degrees, float vecX, float vecY, float vecZ);
 	void rotateX(float degrees);
@@ -175,15 +177,15 @@ private:
 	bool bBackgroundAuto;
 	ofFloatColor bgColor;
 
-	vector<ofPoint> linePoints;
-	vector<ofPoint> rectPoints;
-	vector<ofPoint> triPoints;
-	vector<ofPoint> circlePoints;
-	
+	vector<ofVec3f> linePoints;
+	vector<ofVec3f> rectPoints;
+	vector<ofVec3f> triPoints;
+	vector<ofVec3f> circlePoints;
 	
 	ofVbo circleVbo;
 	ofVbo triangleVbo;
 	ofVbo rectVbo;
+	ofVbo lineVbo;
 	
 	ofPolyline circlePolyline;
 	

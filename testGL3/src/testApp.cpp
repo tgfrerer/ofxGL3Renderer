@@ -41,7 +41,7 @@ void testApp::draw(){
 	GL3Renderer->beginShader(mPassThrough);
 	
 	ofClear(0,0,0);
-	
+
 	ofFill();
 	ofSetColor(255,0,0);
 	
@@ -55,6 +55,7 @@ void testApp::draw(){
 	ofSetColor(0,255,0);
 	ofCircle(0, 0, 6);
 	ofPopMatrix();
+
 	
 	ofPushMatrix();
 	ofPushMatrix();
@@ -68,11 +69,16 @@ void testApp::draw(){
 	ofSetColor(0,255,255);
 	ofRect(0, 0, 3, 3);
 	ofPopMatrix();
-	
+
 	ofTranslate(8, 2);
 	ofSetColor(255,255,255);
 	ofTriangle(ofVec3f(0,4), ofVec3f(0,0), ofVec3f(4,4));
 	ofPopMatrix();
+
+	for (int i =0; i<100; i++){
+		ofLine(ofVec2f(-10+i*0.2,0), ofVec2f( -10+i*0.2,5));
+	}
+
 	
 	GL3Renderer->endShader();
 	mCam1.end();
