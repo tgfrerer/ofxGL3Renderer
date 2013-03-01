@@ -21,7 +21,7 @@
 #include "ofAppBaseWindow.h"
 #include "ofEvents.h"
 
-//class ofPoint;
+//class ofVec3f;
 class ofBaseApp;
 
 class ofAppGLFWWindow : public ofAppBaseWindow {
@@ -45,9 +45,9 @@ public:
 	int getHeight();
 	int getWidth();
 	
-	ofPoint		getWindowPosition();
-	ofPoint		getWindowSize();
-	ofPoint		getScreenSize();
+	ofVec3f		getWindowSize();
+	ofVec3f		getScreenSize();
+	ofVec3f 	getWindowPosition();
 
 	void setWindowTitle(string title);
 	void setWindowPosition(int x, int y);

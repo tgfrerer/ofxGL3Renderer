@@ -279,19 +279,20 @@ void ofAppGLFWWindow::setWindowTitle(string title){
 	glfwSetWindowTitle(windowP,title.c_str());
 }
 
-ofPoint ofAppGLFWWindow::getWindowSize(){
-	return ofPoint(windowW, windowH,0);
+ofVec3f ofAppGLFWWindow::getWindowSize(){
+	return ofVec3f(windowW, windowH,0);
 }
 
-ofPoint ofAppGLFWWindow::getWindowPosition(){
+ofVec3f ofAppGLFWWindow::getWindowPosition(){
 	glfwGetWindowPos(windowP, &nonFullScreenX, &nonFullScreenY);
-	return ofPoint(nonFullScreenX,nonFullScreenY,0);
+	return ofVec3f(nonFullScreenX,nonFullScreenY,0);
 }
 
-ofPoint ofAppGLFWWindow::getScreenSize(){
-//	GLFWvidmode desktopMode;
-//	glfwGetDesktopMode(&desktopMode);
-//	return ofPoint(desktopMode.Width, desktopMode.Height,0);
+ofVec3f ofAppGLFWWindow::getScreenSize(){
+	GLFWvidmode desktopMode;
+	desktopMode = glfwGetVideoMode(glfwGetWindowMonitor(windowP));
+	
+	return ofVec3f(desktopMode.width, desktopMode.height,0);
 }
 
 int ofAppGLFWWindow::getWidth(){
