@@ -38,113 +38,72 @@ void ofxGL3Renderer::update(){
 
 
 // ----------------------------------------------------------------------
-#pragma mark - TODO draw ofMesh
+#pragma mark - TESTING draw ofMesh
 
 void ofxGL3Renderer::draw(ofMesh & vertexData, bool useColors, bool useTextures, bool useNormals){
-	if(vertexData.getNumVertices()){
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), &vertexData.getVerticesPointer()->x);
-//		glEnableVertexAttribArray(0);
+	
+	preparePrimitiveDraw(meshVbo);
+
+	if(vertexData.hasVertices()){
+		meshVbo.setVertexData( vertexData.getVerticesPointer(), vertexData.getNumVertices(), GL_DYNAMIC_DRAW);
 	}
-	if(vertexData.getNumNormals() && useNormals){
-		glEnableClientState(GL_NORMAL_ARRAY);
-		glNormalPointer(GL_FLOAT, sizeof(ofVec3f), &vertexData.getNormalsPointer()->x);
+	if(useNormals && vertexData.hasNormals()){
+		meshVbo.setNormalData(vertexData.getNormalsPointer(), vertexData.getNumNormals(), GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, meshVbo.getNormalId()); // bind to triangle vertices
+		glEnableVertexAttribArray(shaderLocCache.locAttributeNormal);	// activate attribute 'normal' in shader
+		glVertexAttribPointer(shaderLocCache.locAttributeNormal, 3, GL_FLOAT,GL_FALSE,0,0);
 	}
-	if(vertexData.getNumColors() && useColors){
-		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(4,GL_FLOAT, sizeof(ofFloatColor), &vertexData.getColorsPointer()->r);
+	if(useColors && vertexData.hasColors()){
+		// tig: CHECK
+		meshVbo.setColorData(vertexData.getColorsPointer(),vertexData.getNumColors(),GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, meshVbo.getColorId()); // bind to triangle vertices
+		glEnableVertexAttribArray(shaderLocCache.locAttributeColor);	// activate attribute 'color' in shader
+		glVertexAttribPointer(shaderLocCache.locAttributeColor, 4 , GL_FLOAT, GL_FALSE,0,0);
+
+	}
+	if(useTextures && vertexData.hasTexCoords()){
+		// tig: CHECK
+		meshVbo.setTexCoordData(vertexData.getTexCoordsPointer(), vertexData.getNumTexCoords(), GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, meshVbo.getColorId()); // bind to triangle vertices
+		glEnableVertexAttribArray(shaderLocCache.locAttributeColor);	// activate attribute 'normal' in shader
+		glVertexAttribPointer(shaderLocCache.locAttributeColor, 2, GL_FLOAT,GL_FALSE,0,0);
+	}
+	if (vertexData.hasIndices()){
+		meshVbo.setIndexData(vertexData.getIndexPointer(), vertexData.getNumIndices(), GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshVbo.getIndexId());
 	}
 
-	if(vertexData.getNumTexCoords() && useTextures){
-		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2, GL_FLOAT, sizeof(ofVec2f), &vertexData.getTexCoordsPointer()->x);
-	}
-
-	if(vertexData.getNumIndices()){
-#ifdef TARGET_OPENGLES
-		glDrawElements(ofGetGLPrimitiveMode(vertexData.getMode()), vertexData.getNumIndices(),GL_UNSIGNED_SHORT,vertexData.getIndexPointer());
-#else
-		glDrawElements(ofGetGLPrimitiveMode(vertexData.getMode()), vertexData.getNumIndices(),GL_UNSIGNED_INT,vertexData.getIndexPointer());
-#endif
+	// do the actual rendering:
+	
+	if(vertexData.hasIndices()){
+		glDrawElements(ofGetGLPrimitiveMode(vertexData.getMode()), vertexData.getNumIndices(), GL_UNSIGNED_INT, NULL);
 	}else{
 		glDrawArrays(ofGetGLPrimitiveMode(vertexData.getMode()), 0, vertexData.getNumVertices());
 	}
-	if(vertexData.getNumColors()){
-		glDisableClientState(GL_COLOR_ARRAY);
-	}
-	if(vertexData.getNumNormals()){
-		glDisableClientState(GL_NORMAL_ARRAY);
-	}
-	if(vertexData.getNumTexCoords()){
-		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	}
+	finishPrimitiveDraw();
+	
 }
 
 // ----------------------------------------------------------------------
-#pragma mark - TODO: draw ofMesh
+#pragma mark - OK: draw ofMesh w/ polymode
 
 void ofxGL3Renderer::draw(ofMesh & vertexData, ofPolyRenderMode renderType, bool useColors, bool useTextures, bool useNormals){
-		if (bSmoothHinted) startSmoothing();
-#ifndef TARGET_OPENGLES
-		glPushAttrib(GL_POLYGON_BIT);
-		glPolygonMode(GL_FRONT_AND_BACK, ofGetGLPolyMode(renderType));
-		draw(vertexData,useColors,useTextures,useNormals);
-		glPopAttrib(); //TODO: GLES doesnt support polygon mode, add renderType to gl renderer?
-#else
-		if(vertexData.getNumVertices()){
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), vertexData.getVerticesPointer());
-		}
-		if(vertexData.getNumNormals() && useNormals){
-			glEnableClientState(GL_NORMAL_ARRAY);
-			glNormalPointer(GL_FLOAT, 0, vertexData.getNormalsPointer());
-		}
-		if(vertexData.getNumColors() && useColors){
-			glEnableClientState(GL_COLOR_ARRAY);
-			glColorPointer(4,GL_FLOAT, sizeof(ofFloatColor), vertexData.getColorsPointer());
-		}
-
-		if(vertexData.getNumTexCoords() && useTextures){
-			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-			glTexCoordPointer(2, GL_FLOAT, 0, vertexData.getTexCoordsPointer());
-		}
-
-		GLenum drawMode;
-		switch(renderType){
-		case OF_MESH_POINTS:
-			drawMode = GL_POINTS;
-			break;
-		case OF_MESH_WIREFRAME:
-			drawMode = GL_LINES;
-			break;
-		case OF_MESH_FILL:
-			drawMode = ofGetGLPrimitiveMode(vertexData.getMode());
-			break;
-		default:
-			drawMode = ofGetGLPrimitiveMode(vertexData.getMode());
-			break;
-		}
-
-		if(vertexData.getNumIndices()){
-			glDrawElements(drawMode, vertexData.getNumIndices(),GL_UNSIGNED_SHORT,vertexData.getIndexPointer());
-		}else{
-			glDrawArrays(drawMode, 0, vertexData.getNumVertices());
-		}
-		if(vertexData.getNumColors() && useColors){
-			glDisableClientState(GL_COLOR_ARRAY);
-		}
-		if(vertexData.getNumNormals() && useNormals){
-			glDisableClientState(GL_NORMAL_ARRAY);
-		}
-		if(vertexData.getNumTexCoords() && useTextures){
-			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-		}
-#endif
-		if (bSmoothHinted) endSmoothing();
+	// tig: it is a bad idea to use glGetXX or pushAttrib during rendering,
+	// these amongst the most costly and avoidable OpenGL methods.
+	// it is, however, unavoidable here, so that we can restore state.
+	// the preferred option is to use draw() without a rendertype param,
+	// setting the polymode directly in the client code before the draw() call.
+	
+	GLint previousPolyMode[2];
+	glGetIntegerv(GL_POLYGON_MODE, previousPolyMode);
+	
+	glPolygonMode(GL_FRONT_AND_BACK, ofGetGLPolyMode(renderType));
+	draw(vertexData, useColors, useTextures, useNormals);
+	glPolygonMode(GL_FRONT_AND_BACK, previousPolyMode[0]);
 }
 
 // ----------------------------------------------------------------------
-#pragma mark - CHECK (draw vertex data)
+#pragma mark - TESTING (draw vertex data)
 
 void ofxGL3Renderer::draw(vector<ofVec3f> & vertexData, ofPrimitiveMode drawMode){
 	if(!vertexData.empty()) {
@@ -156,7 +115,7 @@ void ofxGL3Renderer::draw(vector<ofVec3f> & vertexData, ofPrimitiveMode drawMode
 }
 
 // ----------------------------------------------------------------------
-#pragma mark - CHECK (draw ofPolyline)
+#pragma mark - TESTING (draw ofPolyline)
 void ofxGL3Renderer::draw(ofPolyline & poly){
 	if(!poly.getVertices().empty()) {
 		vertexDataVbo.setVertexData(&poly.getVertices()[0], poly.size(), GL_DYNAMIC_DRAW);
@@ -167,7 +126,7 @@ void ofxGL3Renderer::draw(ofPolyline & poly){
 }
 
 // ----------------------------------------------------------------------
-#pragma mark - TODO (draw ofPath)
+#pragma mark - TESTING (draw ofPath)
 void ofxGL3Renderer::draw(ofPath & shape){
 	ofColor prevColor;
 	if(shape.getUseShapeColor()){
@@ -645,6 +604,9 @@ void ofxGL3Renderer::beginShader(shaderP_t shader_){
 		shaderLocCache.locUniformModelViewMatrix	= glGetUniformLocation(shaderProg, "modelViewMatrix");
 		shaderLocCache.locUniformColor				= glGetUniformLocation(shaderProg, "uColor");
 		shaderLocCache.locAttributePosition			= glGetAttribLocation(shaderProg, "position");
+		shaderLocCache.locAttributeNormal			= glGetAttribLocation(shaderProg, "normal");
+		shaderLocCache.locAttributeColor			= glGetAttribLocation(shaderProg, "color");
+		shaderLocCache.locAttributeTexCoord			= glGetAttribLocation(shaderProg, "texCoord");
 		
 		glBindVertexArray(defaultVAO);
 		glBindVertexArray(0);
@@ -1067,17 +1029,6 @@ void ofxGL3Renderer::disablePointSprites(){
 // ----------------------------------------------------------------------
 #pragma mark- Primitive Draw Methods
 // ----------------------------------------------------------------------
-#pragma mark- TODO: DRAW LINE
-void ofxGL3Renderer::drawLine(float x1, float y1, float z1, float x2, float y2, float z2){
-	linePoints[0].set(x1,y1,z1);
-	linePoints[1].set(x2,y2, z2);
-	lineVbo.setVertexData(&linePoints[0], 2, GL_DYNAMIC_DRAW);
-	preparePrimitiveDraw(lineVbo);
-	glDrawArrays(GL_LINES, 0, 2);
-	finishPrimitiveDraw();
-}
-
-// ----------------------------------------------------------------------
 
 inline void ofxGL3Renderer::preparePrimitiveDraw(ofVbo& vbo_){
 	// bind vertex array
@@ -1092,6 +1043,17 @@ inline void ofxGL3Renderer::finishPrimitiveDraw(){
 	// ubind, basically.
 	glDisableVertexAttribArray(0);			// disable vertex attrib array.
 	glBindBuffer(GL_ARRAY_BUFFER,0);		// unbind by binding to zero
+}
+
+// ----------------------------------------------------------------------
+
+void ofxGL3Renderer::drawLine(float x1, float y1, float z1, float x2, float y2, float z2){
+	linePoints[0].set(x1,y1,z1);
+	linePoints[1].set(x2,y2, z2);
+	lineVbo.setVertexData(&linePoints[0], 2, GL_DYNAMIC_DRAW);
+	preparePrimitiveDraw(lineVbo);
+	glDrawArrays(GL_LINES, 0, 2);
+	finishPrimitiveDraw();
 }
 
 // ----------------------------------------------------------------------
@@ -1147,29 +1109,23 @@ void ofxGL3Renderer::drawCircle(float x, float y, float z,  float radius){
 	preparePrimitiveDraw(circleVbo);
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_FAN : GL_LINE_STRIP, 0, circlePoints.size());
 	finishPrimitiveDraw();
-	
-
 }
 
 // ----------------------------------------------------------------------
-#pragma mark - TODO: DRAW SPHERE
+
 void ofxGL3Renderer::drawSphere(float x, float y, float z, float radius) {
-    
-    glEnable(GL_NORMALIZE);
-    glPushMatrix();
-    glScalef(radius, radius, radius);
+	pushMatrix();
+    scale(radius, radius, radius);
     if(bFilled) {
-        sphereMesh.draw();
+		draw(sphereMesh,OF_MESH_FILL, false, true,true);
     } else {
-        sphereMesh.drawWireframe();
+		draw(sphereMesh,OF_MESH_WIREFRAME, true, false, true);
     }
-    glPopMatrix();
-    glDisable(GL_NORMALIZE);
-    
+    popMatrix();
 }
 
 // ----------------------------------------------------------------------
-#pragma mark - TODO: DRAW ELLIPSE
+#pragma mark - TESTING: DRAW ELLIPSE
 void ofxGL3Renderer::drawEllipse(float x, float y, float z, float width, float height){
 	float radiusX = width*0.5;
 	float radiusY = height*0.5;
@@ -1181,9 +1137,12 @@ void ofxGL3Renderer::drawEllipse(float x, float y, float z, float width, float h
 	// use smoothness, if requested:
 	if (bSmoothHinted && bFilled == OF_OUTLINE) startSmoothing();
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, sizeof(ofVec3f), &circlePoints[0].x);
+	circleVbo.setVertexData(&circlePoints[0].x, 3, circlePoints.size(), GL_DYNAMIC_DRAW, sizeof(ofVec3f));
+	
+	preparePrimitiveDraw(circleVbo);
 	glDrawArrays((bFilled == OF_FILLED) ? GL_TRIANGLE_FAN : GL_LINE_STRIP, 0, circlePoints.size());
+	finishPrimitiveDraw();
+
 
 	// use smoothness, if requested:
 	if (bSmoothHinted && bFilled == OF_OUTLINE) endSmoothing();

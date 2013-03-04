@@ -30,13 +30,16 @@ class ofxGL3Renderer: public ofBaseRenderer{
 	ofVbo rectVbo;
 	ofVbo lineVbo;
 	ofVbo vertexDataVbo;
-	
+	ofVbo meshVbo;
 	
 	struct {
 		GLuint locUniformProjectionMatrix;
 		GLuint locUniformModelViewMatrix;
 		GLuint locUniformColor;
 		GLuint locAttributePosition;
+		GLuint locAttributeNormal;
+		GLuint locAttributeColor;
+		GLuint locAttributeTexCoord;
 	} shaderLocCache;
 	
 	void preparePrimitiveDraw(ofVbo& vbo);

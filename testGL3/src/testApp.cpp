@@ -37,26 +37,26 @@ void testApp::update(){
 void testApp::draw(){
 
 	mCam1.begin();
-	
+
 	GL3Renderer->beginShader(mPassThrough);
-	
+
 	ofClear(0,0,0);
 
-	ofFill();
+	ofNoFill();
 	ofSetColor(255,0,0);
 	
-	ofPushMatrix();
-	ofTranslate(-4, 0);
-	ofCircle(0, 0, 5);
-	ofPopMatrix();
-	ofNoFill();
-	ofPushMatrix();
-	ofTranslate(-4, 0);
-	ofSetColor(0,255,0);
-	ofCircle(0, 0, 6);
-	ofPopMatrix();
-
-	
+//	ofPushMatrix();
+//	ofTranslate(-4, 0);
+//	ofCircle(0, 0, 5);
+//	ofPopMatrix();
+//	ofNoFill();
+//	ofPushMatrix();
+//	ofTranslate(-4, 0);
+//	ofSetColor(0,255,0);
+//	ofCircle(0, 0, 6);
+//	ofPopMatrix();
+//
+//	
 	ofPushMatrix();
 	ofPushMatrix();
 	ofTranslate(3, -6);
@@ -75,10 +75,25 @@ void testApp::draw(){
 	ofTriangle(ofVec3f(0,4), ofVec3f(0,0), ofVec3f(4,4));
 	ofPopMatrix();
 
-	for (int i =0; i<100; i++){
-		ofLine(ofVec2f(-10+i*0.2,0), ofVec2f( -10+i*0.2,5));
-	}
+	glEnable(GL_DEPTH_TEST);
+	glCullFace(GL_BACK);
+	glEnable(GL_CULL_FACE);
+	ofFill();
+	ofSetColor(255);
+	ofPushMatrix();
+	
+	ofSphere(0, 0, 0, 3);
 
+	ofBox(0, 0, 0, 5);
+
+	ofPopMatrix();
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	
+//	for (int i =0; i<100; i++){
+//		ofLine(ofVec2f(-10+i*0.2,0), ofVec2f( -10+i*0.2,5));
+//	}
+	
 	
 	GL3Renderer->endShader();
 	mCam1.end();
