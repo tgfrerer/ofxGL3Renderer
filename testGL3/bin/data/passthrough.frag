@@ -9,8 +9,5 @@ flat	in  vec4 vertColor;
 
 void main()
 {
-
-	//	fragColor = vertColor;
-//	fragColor = vec4(texCoordVarying,texCoordVarying);
   fragColor = mix(vertColor,texture(src_tex_unit0, texCoordVarying),0.5);
 }

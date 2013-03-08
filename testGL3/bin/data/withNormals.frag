@@ -5,9 +5,9 @@ uniform vec4 color = vec4(1.0);
 uniform float useTexture = 0.0;
 uniform float useColors = 1.0;
 
-in	vec4 colorVarying;
+flat in	vec4 colorVarying;
 in	vec2 texCoordVarying;
-in	vec4 normalVarying;
+in	vec4 normalVaryingX;
 
 out	vec4 fragColor;
 
@@ -29,5 +29,6 @@ void main()
 		fragColor *= vec4(1.0);
 	}
 
+	fragColor = colorVarying;
 	// fragColor = color * tex;
 }

@@ -10,21 +10,21 @@ void testApp::setup(){
 #ifdef USE_PROGRAMMABLE_GL
 	glGetError();
 
-	mPassThrough = ofPtr<ofShader>(new ofShader);
-	string result = (mPassThrough->load("withNormals")) ? "Loaded passthrough shader successfully" : "Awww. problem loading passthrough shader.";
+	mFlatNormalShader = ofPtr<ofShader>(new ofShader);
+	string result = (mFlatNormalShader->load("withNormals")) ? "Loaded flat normals shader successfully" : "Awww. problem loading flat normals shader.";
 	ofLogNotice() << result;
 	
-//	GL3Renderer = ofPtr<ofxGL3Renderer>(new ofxGL3Renderer());
+	ofLogNotice() << "normals shader";
+	mFlatNormalShader->printActiveAttributes();
+	mFlatNormalShader->printActiveUniforms();
 
+	
 	ProgrammableGLRenderer = ofPtr<ofProgrammableGLRenderer>(new ofProgrammableGLRenderer());
 
 	ofSetCurrentRenderer(ProgrammableGLRenderer);
 	ProgrammableGLRenderer->setup();
 #endif
-	//	ofDisableSetupScreen();
-	//	ofSetCurrentRenderer(GL3Renderer);
 
-	
 	mCam1.setupPerspective(true, 60, 0.1, 200);
 	mCam1.setGlobalPosition(5, 5, 20);
 	
@@ -33,14 +33,10 @@ void testApp::setup(){
 	mCam1.setTranslationKey('m');
 	mCam1.setDistance(20);
 
-//	mPassThrough->printActiveAttributes();
-//	mPassThrough->printActiveUniforms();
 
-//	mImg1.loadImage("stolen_pony.jpg");
 	mImg1.loadImage("sky.jpg");
 
 	ofSetSphereResolution(20);
-
 	
 	mFbo1.allocate(ofGetWidth(), ofGetHeight());
 }
@@ -54,7 +50,6 @@ void testApp::update(){
 void testApp::draw(){
 
 //	ofSetupScreenPerspective(ofGetWidth(), ofGetHeight(), OF_ORIENTATION_DEFAULT, false);
-	mPassThrough->begin();
 
 #ifdef USE_PROGRAMMABLE_GL
 	ProgrammableGLRenderer->startRender();
@@ -75,16 +70,9 @@ void testApp::draw(){
 	ofNoFill();
 	ofSetColor(255);
 
-//	ofScale(1, -1, 1);
-//	ofTranslate(0, -ofGetHeight());
 	
 	ofPushMatrix();
-
-//	ofTranslate(ofGetWidth()/3.0, ofGetHeight()/3.0);
-//	ofScale(20, 20);
 	ofDrawAxis(10);
-	
-	
 	ofDrawGrid(20);
 	
 	ofPushMatrix();
@@ -119,21 +107,19 @@ void testApp::draw(){
 	ofNoFill();
 	ofSetColor(255);
 
-	mPassThrough->end();
-	// this is where bad things happen...
 	ofPushMatrix();
 	ofTranslate(ofVec3f(0,0,-1));
 	mImg1.draw(0,0,10,10);
 	ofPopMatrix();
 
-	mPassThrough->begin();
 
 	ofSetColor(0, 0, 255);
 	glDisable(GL_CULL_FACE);
-	ofDrawBitmapString("Hello World\n This is a test, and we are Using a Lot\n of Different characters for it !!!.", ofVec3f(2,2,0));
+	ofDrawBitmapString("Hello World\n This is a test, and we are using lots\n of different characters for it :-) ", ofVec3f(2,2,0));
 	glEnable(GL_CULL_FACE);
 	ofSetColor(255);
 	
+	mFlatNormalShader->begin();
 	
 	ofPushMatrix();
 	ofFill();
@@ -146,33 +132,25 @@ void testApp::draw(){
 	ofPopMatrix();
 	ofPopMatrix();
 
-	mPassThrough->begin();
 	ofDrawCone(4, 0, 0, 0.5, 2);
-	mPassThrough->end();
+	mFlatNormalShader->end();
 	ofPopMatrix();
 
-	
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
-	mPassThrough->end();
 	
 	mCam1.end();
 	mFbo1.end();
 
 	ofSetColor(255);
+	ofClear(255,0,0);
 	ofDisableAlphaBlending();
 
-	mFbo1.getTextureReference().draw(200, 0);
+	mFbo1.getTextureReference().draw(0, 0);
 
 	ofDisableAlphaBlending();
 
 #ifdef USE_PROGRAMMABLE_GL
-	
-//	*debugGetFontTexture() = mImg1.getTextureReference();
-// debugGetFontTexture()->draw(600,100);
-
-//	debugGetFontTexture()->draw(600,100 + 256);
-
 	ProgrammableGLRenderer->finishRender();
 #endif
 	
@@ -187,8 +165,8 @@ void testApp::keyPressed(int key){
 	if (key == ' '){
 		glGetError();
 
-		mPassThrough = ofPtr<ofShader>(new ofShader);
-		string result = (mPassThrough->load("passthrough")) ? "Loaded passthrough shader successfully" : "Awww. problem loading passthrough shader.";
+		mFlatNormalShader = ofPtr<ofShader>(new ofShader);
+		string result = (mFlatNormalShader->load("passthrough")) ? "Loaded passthrough shader successfully" : "Awww. problem loading passthrough shader.";
 		ofLogNotice() << result;
 	}
 #endif

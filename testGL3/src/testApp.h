@@ -6,7 +6,7 @@
 
 class testApp : public ofBaseApp{
 
-	ofPtr<ofShader>	mPassThrough;
+	ofPtr<ofShader>	mFlatNormalShader;
 
 	ofEasyCam						mCam1;
 	ofPtr<ofProgrammableGLRenderer> ProgrammableGLRenderer;

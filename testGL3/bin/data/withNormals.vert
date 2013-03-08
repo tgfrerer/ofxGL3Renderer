@@ -8,9 +8,9 @@ in vec4	normal;
 in vec4	color;
 in vec2	texcoord;
 
-out vec4 normalVarying;
+out vec4 normalVaryingX;
 out vec2 texCoordVarying;
-out vec4 colorVarying;
+flat out vec4 colorVarying;
 
 void main()
 {
@@ -21,8 +21,9 @@ void main()
 	mat4 normalMatrix;
 	normalMatrix = transpose(inverse(modelViewMatrix));
 
-	colorVarying = color;
-	normalVarying = normalMatrix * normal;
+	// colorVarying = color;
+	normalVaryingX = normalMatrix * normal;
+	colorVarying = vec4((normal.xyz + vec3(1.0, 1.0, 1.0)) / 2.0,1.0);
 	gl_Position = projectionMatrix * modelViewMatrix * position;
 }
 
