@@ -1,21 +1,31 @@
 #include "testApp.h"
+#include "ofBitmapFont.h"
 
+#define USE_PROGRAMMABLE_GL
 
 //--------------------------------------------------------------
 void testApp::setup(){
 	
+	shouldDrawString = false;
+#ifdef USE_PROGRAMMABLE_GL
 	glGetError();
-	
+
 	mPassThrough = ofPtr<ofShader>(new ofShader);
-	
-	string result = (mPassThrough->load("passthrough")) ? "Loaded passthrough shader successfully" : "Awww. problem loading passthrough shader.";
+	string result = (mPassThrough->load("withNormals")) ? "Loaded passthrough shader successfully" : "Awww. problem loading passthrough shader.";
 	ofLogNotice() << result;
 	
-	GL3Renderer = ofPtr<ofxGL3Renderer>(new ofxGL3Renderer());
+//	GL3Renderer = ofPtr<ofxGL3Renderer>(new ofxGL3Renderer());
+
+	ProgrammableGLRenderer = ofPtr<ofProgrammableGLRenderer>(new ofProgrammableGLRenderer());
+
+	ofSetCurrentRenderer(ProgrammableGLRenderer);
+	ProgrammableGLRenderer->setup();
+#endif
+	//	ofDisableSetupScreen();
+	//	ofSetCurrentRenderer(GL3Renderer);
+
 	
-	ofSetCurrentRenderer(GL3Renderer);
-	
-	mCam1.setupPerspective(false, 60, 0.1, 200);
+	mCam1.setupPerspective(true, 60, 0.1, 200);
 	mCam1.setGlobalPosition(5, 5, 20);
 	
 	mCam1.disableMouseInput();
@@ -26,6 +36,13 @@ void testApp::setup(){
 //	mPassThrough->printActiveAttributes();
 //	mPassThrough->printActiveUniforms();
 
+//	mImg1.loadImage("stolen_pony.jpg");
+	mImg1.loadImage("sky.jpg");
+
+	ofSetSphereResolution(20);
+
+	
+	mFbo1.allocate(ofGetWidth(), ofGetHeight());
 }
 
 //--------------------------------------------------------------
@@ -36,73 +53,150 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
 
-	mCam1.begin();
+//	ofSetupScreenPerspective(ofGetWidth(), ofGetHeight(), OF_ORIENTATION_DEFAULT, false);
+	mPassThrough->begin();
 
-	GL3Renderer->beginShader(mPassThrough);
+#ifdef USE_PROGRAMMABLE_GL
+	ProgrammableGLRenderer->startRender();
+#endif
+	
+	
+	mFbo1.begin(false);
 
-	ofClear(0,0,0);
+    mCam1.begin();
+
+	glEnable(GL_DEPTH_TEST);
+	glCullFace(GL_FRONT);
+	glEnable(GL_CULL_FACE);
+	
+	ofClear(128);
+
 
 	ofNoFill();
-	ofSetColor(255,0,0);
+	ofSetColor(255);
+
+//	ofScale(1, -1, 1);
+//	ofTranslate(0, -ofGetHeight());
 	
-//	ofPushMatrix();
-//	ofTranslate(-4, 0);
-//	ofCircle(0, 0, 5);
-//	ofPopMatrix();
-//	ofNoFill();
-//	ofPushMatrix();
-//	ofTranslate(-4, 0);
-//	ofSetColor(0,255,0);
-//	ofCircle(0, 0, 6);
-//	ofPopMatrix();
-//
-//	
+	ofPushMatrix();
+
+//	ofTranslate(ofGetWidth()/3.0, ofGetHeight()/3.0);
+//	ofScale(20, 20);
+	ofDrawAxis(10);
+	
+	
+	ofDrawGrid(20);
+	
+	ofPushMatrix();
+	ofTranslate(-4, 0);
+	ofCircle(0, 0, 4);
+	ofPopMatrix();
+	
+	ofNoFill();
+	
+	ofPushMatrix();
+	ofTranslate(-4, 0);
+	ofSetColor(0,255,0);
+	ofCircle(0, 0, 6);
+	ofPopMatrix();
+	
 	ofPushMatrix();
 	ofPushMatrix();
 	ofTranslate(3, -6);
 	ofSetColor(0,0,255);
 	ofRect(0, 0, 4, 12);
 	ofPopMatrix();
-	
 	ofPushMatrix();
 	ofTranslate(8, -2);
 	ofSetColor(0,255,255);
 	ofRect(0, 0, 3, 3);
 	ofPopMatrix();
-
 	ofTranslate(8, 2);
 	ofSetColor(255,255,255);
 	ofTriangle(ofVec3f(0,4), ofVec3f(0,0), ofVec3f(4,4));
 	ofPopMatrix();
 
-	glEnable(GL_DEPTH_TEST);
-	glCullFace(GL_BACK);
-	glEnable(GL_CULL_FACE);
-	ofFill();
+	ofNoFill();
 	ofSetColor(255);
+
+	mPassThrough->end();
+	// this is where bad things happen...
 	ofPushMatrix();
-	
-	ofSphere(0, 0, 0, 3);
-
-	ofBox(0, 0, 0, 5);
-
+	ofTranslate(ofVec3f(0,0,-1));
+	mImg1.draw(0,0,10,10);
 	ofPopMatrix();
+
+	mPassThrough->begin();
+
+	ofSetColor(0, 0, 255);
+	glDisable(GL_CULL_FACE);
+	ofDrawBitmapString("Hello World\n This is a test, and we are Using a Lot\n of Different characters for it !!!.", ofVec3f(2,2,0));
+	glEnable(GL_CULL_FACE);
+	ofSetColor(255);
+	
+	
+	ofPushMatrix();
+	ofFill();
+	ofDrawSphere(-4, 0, 0, 3);
+	ofPushMatrix();
+	ofFill();
+	ofTranslate(0, - 8);
+	ofScale(20.0, 1.0, 0.2);
+	ofDrawBox(1);
+	ofPopMatrix();
+	ofPopMatrix();
+
+	mPassThrough->begin();
+	ofDrawCone(4, 0, 0, 0.5, 2);
+	mPassThrough->end();
+	ofPopMatrix();
+
+	
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+	mPassThrough->end();
 	
-//	for (int i =0; i<100; i++){
-//		ofLine(ofVec2f(-10+i*0.2,0), ofVec2f( -10+i*0.2,5));
-//	}
-	
-	
-	GL3Renderer->endShader();
 	mCam1.end();
+	mFbo1.end();
 
+	ofSetColor(255);
+	ofDisableAlphaBlending();
+
+	mFbo1.getTextureReference().draw(200, 0);
+
+	ofDisableAlphaBlending();
+
+#ifdef USE_PROGRAMMABLE_GL
+	
+//	*debugGetFontTexture() = mImg1.getTextureReference();
+// debugGetFontTexture()->draw(600,100);
+
+//	debugGetFontTexture()->draw(600,100 + 256);
+
+	ProgrammableGLRenderer->finishRender();
+#endif
+	
+	
 }
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
 //	ofLogNotice() << "key pressed:  " << char(key);
+
+#ifdef USE_PROGRAMMABLE_GL
+	if (key == ' '){
+		glGetError();
+
+		mPassThrough = ofPtr<ofShader>(new ofShader);
+		string result = (mPassThrough->load("passthrough")) ? "Loaded passthrough shader successfully" : "Awww. problem loading passthrough shader.";
+		ofLogNotice() << result;
+	}
+#endif
+	
+	if (key == 'x'){
+		shouldDrawString ^= true;
+	}
+	
 }
 
 //--------------------------------------------------------------
@@ -133,7 +227,7 @@ void testApp::mouseReleased(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::windowResized(int w, int h){
-
+	mFbo1.allocate(ofGetWidth(), ofGetHeight());
 }
 
 //--------------------------------------------------------------

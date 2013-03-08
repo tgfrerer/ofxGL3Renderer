@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		222611D416DE0F9600BE7510 /* ofxGL3Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 222611D216DE0F9600BE7510 /* ofxGL3Renderer.cpp */; };
 		222611D916DE1D3D00BE7510 /* passthrough.frag in Sources */ = {isa = PBXBuildFile; fileRef = 222611D716DE1D3D00BE7510 /* passthrough.frag */; };
 		222611DA16DE1D3D00BE7510 /* passthrough.vert in Sources */ = {isa = PBXBuildFile; fileRef = 222611D816DE1D3D00BE7510 /* passthrough.vert */; };
 		222B045716DD0A6A0036ED2D /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 222B045316DD0A6A0036ED2D /* libglfw3.a */; };
@@ -65,8 +64,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		222611D216DE0F9600BE7510 /* ofxGL3Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxGL3Renderer.cpp; sourceTree = "<group>"; };
-		222611D316DE0F9600BE7510 /* ofxGL3Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxGL3Renderer.h; sourceTree = "<group>"; };
 		222611D616DE1D3D00BE7510 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		222611D716DE1D3D00BE7510 /* passthrough.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passthrough.frag; sourceTree = "<group>"; };
 		222611D816DE1D3D00BE7510 /* passthrough.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passthrough.vert; sourceTree = "<group>"; };
@@ -207,8 +204,6 @@
 		222B045416DD0A6A0036ED2D /* src */ = {
 			isa = PBXGroup;
 			children = (
-				222611D216DE0F9600BE7510 /* ofxGL3Renderer.cpp */,
-				222611D316DE0F9600BE7510 /* ofxGL3Renderer.h */,
 				222B045516DD0A6A0036ED2D /* ofAppGLFWWindow.cpp */,
 				222B045616DD0A6A0036ED2D /* ofAppGLFWWindow.h */,
 			);
@@ -391,7 +386,6 @@
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* testApp.cpp in Sources */,
 				222B045816DD0A6A0036ED2D /* ofAppGLFWWindow.cpp in Sources */,
-				222611D416DE0F9600BE7510 /* ofxGL3Renderer.cpp in Sources */,
 				222611D916DE1D3D00BE7510 /* passthrough.frag in Sources */,
 				222611DA16DE1D3D00BE7510 /* passthrough.vert in Sources */,
 			);

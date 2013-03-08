@@ -2,15 +2,21 @@
 
 #include "ofMain.h"
 #include "ofxGL3Renderer.h"
+#include "ofProgrammableGLRenderer.h"
 
 class testApp : public ofBaseApp{
 
 	ofPtr<ofShader>	mPassThrough;
-	ofMatrix4x4 mModelview;
-	ofMatrix4x4 mProjection;
 
-	ofEasyCam	mCam1;
-	ofPtr<ofxGL3Renderer> GL3Renderer;
+	ofEasyCam						mCam1;
+	ofPtr<ofProgrammableGLRenderer> ProgrammableGLRenderer;
+	ofPtr<ofxGL3Renderer>			GL3Renderer;
+	
+	ofImage							mImg1;
+	
+	ofFbo							mFbo1;
+	
+	bool shouldDrawString			;
 	
 	public:
 		void setup();
