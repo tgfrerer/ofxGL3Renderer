@@ -187,6 +187,7 @@ void ofAppGLFWWindow::initializeWindow(){
 	glfwSetKeyCallback(windowP, keyboard_cb);
 	glfwSetWindowSizeCallback(windowP, resize_cb);
 	glfwSetWindowCloseCallback(windowP, exit_cb);
+	glfwSetScrollCallback(windowP, scroll_cb);
 
 }
 
@@ -586,6 +587,11 @@ void ofAppGLFWWindow::motion_cb(GLFWwindow* windowP_, int x, int y) {
 	}else{
 		ofNotifyMouseDragged(x, y, buttonInUse);
 	}
+}
+
+//------------------------------------------------------------
+void ofAppGLFWWindow::scroll_cb(GLFWwindow* windowP_, double x, double y) {
+	// ofSendMessage("scroll|"+ofToString(x,5) + "|" + ofToString(y,5));
 }
 
 

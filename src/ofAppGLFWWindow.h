@@ -89,7 +89,8 @@ private:
 	static void 	keyboard_cb(GLFWwindow* windowP_, int key, int state);
 	static void 	resize_cb(GLFWwindow* windowP_, int w, int h);
 	static int 		exit_cb(GLFWwindow* windowP_);
-
+	static void		scroll_cb(GLFWwindow* windowP_, double x, double y);
+	
 	void			idle_cb();
 	
 
