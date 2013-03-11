@@ -1,5 +1,4 @@
 #include "testApp.h"
-#include "ofBitmapFont.h"
 
 #define USE_PROGRAMMABLE_GL
 
@@ -17,7 +16,6 @@ void testApp::setup(){
 	ofLogNotice() << "normals shader";
 	mFlatNormalShader->printActiveAttributes();
 	mFlatNormalShader->printActiveUniforms();
-
 	
 	ProgrammableGLRenderer = ofPtr<ofProgrammableGLRenderer>(new ofProgrammableGLRenderer());
 
@@ -115,14 +113,15 @@ void testApp::draw(){
 
 	ofSetColor(0, 0, 255);
 	glDisable(GL_CULL_FACE);
-	ofDrawBitmapString("Hello World\n This is a test, and we are using lots\n of different characters for it :-) ", ofVec3f(2,2,0));
+	ofDrawBitmapString("The (quick) brown \nfox jumps ^over^ \nthe *lazy* dog :-)", ofVec3f(2,2,0));
 	glEnable(GL_CULL_FACE);
 	ofSetColor(255);
-	
+#ifdef USE_PROGRAMMABLE_GL
 	mFlatNormalShader->begin();
+#endif
 	
 	ofPushMatrix();
-	ofFill();
+	ofNoFill();
 	ofDrawSphere(-4, 0, 0, 3);
 	ofPushMatrix();
 	ofFill();
@@ -133,7 +132,9 @@ void testApp::draw(){
 	ofPopMatrix();
 
 	ofDrawCone(4, 0, 0, 0.5, 2);
+#ifdef USE_PROGRAMMABLE_GL
 	mFlatNormalShader->end();
+#endif
 	ofPopMatrix();
 
 	glDisable(GL_DEPTH_TEST);
@@ -210,7 +211,7 @@ void testApp::windowResized(int w, int h){
 
 //--------------------------------------------------------------
 void testApp::gotMessage(ofMessage msg){
-
+	ofLogNotice() << "gotMessage:" << msg.message;
 }
 
 //--------------------------------------------------------------
