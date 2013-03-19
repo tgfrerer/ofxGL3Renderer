@@ -10,7 +10,7 @@ void testApp::setup(){
 	glGetError();
 
 	mFlatNormalShader = ofPtr<ofShader>(new ofShader);
-	string result = (mFlatNormalShader->load("withNormals")) ? "Loaded flat normals shader successfully" : "Awww. problem loading flat normals shader.";
+	string result = (mFlatNormalShader->load("passthrough")) ? "Loaded flat normals shader successfully" : "Awww. problem loading flat normals shader.";
 	ofLogNotice() << result;
 	
 	ofLogNotice() << "normals shader";
@@ -121,7 +121,7 @@ void testApp::draw(){
 #endif
 	
 	ofPushMatrix();
-	ofNoFill();
+	ofFill();
 	ofDrawSphere(-4, 0, 0, 3);
 	ofPushMatrix();
 	ofFill();
@@ -147,8 +147,10 @@ void testApp::draw(){
 	ofClear(255,0,0);
 	ofDisableAlphaBlending();
 
+	mFlatNormalShader->begin();
 	mFbo1.getTextureReference().draw(0, 0);
-
+	mFlatNormalShader->end();
+	
 	ofDisableAlphaBlending();
 
 #ifdef USE_PROGRAMMABLE_GL
