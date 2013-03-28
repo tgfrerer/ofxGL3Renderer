@@ -1,6 +1,6 @@
 #include "testApp.h"
 
-#define USE_PROGRAMMABLE_GL
+ #define USE_PROGRAMMABLE_GL
 
 //--------------------------------------------------------------
 void testApp::setup(){
@@ -31,12 +31,15 @@ void testApp::setup(){
 	mCam1.setTranslationKey('m');
 	mCam1.setDistance(20);
 
-
-	mImg1.loadImage("sky.jpg");
-
+	ofEnableNormalizedTexCoords();
+	mImg1.loadImage("stolen_pony.jpg");
+	ofDisableNormalizedTexCoords();
+	
+	ofEnableArbTex();
+	
 	ofSetSphereResolution(20);
 	
-	mFbo1.allocate(ofGetWidth(), ofGetHeight());
+	mFbo1.allocate(ofGetViewportWidth(), ofGetViewportHeight(),GL_RGBA, 6);
 }
 
 //--------------------------------------------------------------
@@ -59,7 +62,15 @@ void testApp::draw(){
     mCam1.begin();
 
 	glEnable(GL_DEPTH_TEST);
-	glCullFace(GL_FRONT);
+
+	if(ofGetCoordHandedness()==OF_LEFT_HANDED)
+	{
+		glCullFace(GL_FRONT);
+	}
+	else {
+		glCullFace(GL_BACK);
+	}
+		
 	glEnable(GL_CULL_FACE);
 	
 	ofClear(128);
@@ -121,7 +132,7 @@ void testApp::draw(){
 #endif
 	
 	ofPushMatrix();
-	ofNoFill();
+	ofFill();
 	ofDrawSphere(-4, 0, 0, 3);
 	ofPushMatrix();
 	ofFill();
@@ -139,6 +150,10 @@ void testApp::draw(){
 
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+	
+	
+	vector<int> a;
+	
 	
 	mCam1.end();
 	mFbo1.end();

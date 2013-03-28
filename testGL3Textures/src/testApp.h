@@ -9,12 +9,17 @@ class testApp : public ofBaseApp{
 
 	ofEasyCam						mCam1;
 	ofPtr<ofProgrammableGLRenderer> ProgrammableGLRenderer;
-	
 	ofImage							mImg1;
-	
 	ofFbo							mFbo1;
+	ofNode							mLight1;
+	ofVboMesh						mMshCube;
+
+	ofSpherePrimitive				mSphere;
 	
-	bool shouldDrawString			;
+	bool shouldDrawString;
+
+	GLuint biNormalVboId;
+	GLuint tangentVboId;
 	
 	public:
 		void setup();

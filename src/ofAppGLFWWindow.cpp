@@ -561,6 +561,34 @@ void ofAppGLFWWindow::exitApp(){
 	OF_EXIT_APP(0);
 }
 
+//------------------------------------------------------------
+void rotateMouseXY(ofOrientation orientation, int &x, int &y) {
+	int savedY;
+	switch(orientation) {
+		case OF_ORIENTATION_180:
+			x = ofGetWidth() - x;
+			y = ofGetHeight() - y;
+			break;
+			
+		case OF_ORIENTATION_90_RIGHT:
+			savedY = y;
+			y = x;
+			x = ofGetWidth()-savedY;
+			break;
+			
+		case OF_ORIENTATION_90_LEFT:
+			savedY = y;
+			y = ofGetHeight() - x;
+			x = savedY;
+			break;
+			
+		case OF_ORIENTATION_DEFAULT:
+		default:
+			break;
+	}
+}
+
+
 
 //------------------------------------------------------------
 void ofAppGLFWWindow::mouse_cb(GLFWwindow* windowP_, int button, int state) {
@@ -578,15 +606,14 @@ void ofAppGLFWWindow::mouse_cb(GLFWwindow* windowP_, int button, int state) {
 
 }
 
+
 //------------------------------------------------------------
 void ofAppGLFWWindow::motion_cb(GLFWwindow* windowP_, int x, int y) {
-	static ofMouseEventArgs	mouseEventArgs;
-
-	if(!buttonPressed){
-		ofNotifyMouseMoved(x, y);
-	}else{
-		ofNotifyMouseDragged(x, y, buttonInUse);
-	}
+	rotateMouseXY(ofGetOrientation(), x, y);
+	ofAppPtr->mouseX = x;
+	ofAppPtr->mouseY = y;
+	ofNotifyMouseDragged(x, y, buttonInUse);
+	
 }
 
 //------------------------------------------------------------

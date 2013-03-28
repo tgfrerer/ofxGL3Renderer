@@ -7,8 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22219376170358BB005E8A39 /* bump.frag in Sources */ = {isa = PBXBuildFile; fileRef = 22219374170358BB005E8A39 /* bump.frag */; };
+		22219377170358BB005E8A39 /* bump.vert in Sources */ = {isa = PBXBuildFile; fileRef = 22219375170358BB005E8A39 /* bump.vert */; };
 		222611D916DE1D3D00BE7510 /* passthrough.frag in Sources */ = {isa = PBXBuildFile; fileRef = 222611D716DE1D3D00BE7510 /* passthrough.frag */; };
 		222611DA16DE1D3D00BE7510 /* passthrough.vert in Sources */ = {isa = PBXBuildFile; fileRef = 222611D816DE1D3D00BE7510 /* passthrough.vert */; };
+		222B045716DD0A6A0036ED2D /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 222B045316DD0A6A0036ED2D /* libglfw3.a */; };
+		222B045816DD0A6A0036ED2D /* ofAppGLFWWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 222B045516DD0A6A0036ED2D /* ofAppGLFWWindow.cpp */; };
 		22C8654A1700DC510042DD34 /* withNormals.frag in Sources */ = {isa = PBXBuildFile; fileRef = 22C865481700DC510042DD34 /* withNormals.frag */; };
 		22C8654B1700DC510042DD34 /* withNormals.vert in Sources */ = {isa = PBXBuildFile; fileRef = 22C865491700DC510042DD34 /* withNormals.vert */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
@@ -64,9 +68,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		222611D616DE1D3D00BE7510 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		22219374170358BB005E8A39 /* bump.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = bump.frag; sourceTree = "<group>"; };
+		22219375170358BB005E8A39 /* bump.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = bump.vert; sourceTree = "<group>"; };
 		222611D716DE1D3D00BE7510 /* passthrough.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passthrough.frag; sourceTree = "<group>"; };
 		222611D816DE1D3D00BE7510 /* passthrough.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passthrough.vert; sourceTree = "<group>"; };
+		222B044E16DD0A6A0036ED2D /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glfw3.h; sourceTree = "<group>"; };
+		222B044F16DD0A6A0036ED2D /* glfw3native.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glfw3native.h; sourceTree = "<group>"; };
+		222B045016DD0A6A0036ED2D /* glfw_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glfw_config.h; sourceTree = "<group>"; };
+		222B045316DD0A6A0036ED2D /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libglfw3.a; sourceTree = "<group>"; };
+		222B045516DD0A6A0036ED2D /* ofAppGLFWWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofAppGLFWWindow.cpp; sourceTree = "<group>"; };
+		222B045616DD0A6A0036ED2D /* ofAppGLFWWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofAppGLFWWindow.h; sourceTree = "<group>"; };
 		22C865481700DC510042DD34 /* withNormals.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = withNormals.frag; sourceTree = "<group>"; };
 		22C865491700DC510042DD34 /* withNormals.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = withNormals.vert; sourceTree = "<group>"; };
 		22D3BA4B16DE33850016A419 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
@@ -81,7 +92,7 @@
 		E45BE9770E8CC7DD009D7055 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		E45BE9790E8CC7DD009D7055 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
-		E4B69B5B0A3A1756003C02F2 /* testGL3Debug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = testGL3Debug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4B69B5B0A3A1756003C02F2 /* test3dribbonsDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = test3dribbonsDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B69E1D0A3A1BDC003C02F2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
 		E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = testApp.cpp; path = src/testApp.cpp; sourceTree = SOURCE_ROOT; };
 		E4B69E1F0A3A1BDC003C02F2 /* testApp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = testApp.h; path = src/testApp.h; sourceTree = SOURCE_ROOT; };
@@ -118,6 +129,7 @@
 				E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */,
 				E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */,
 				E7E077E515D3B63C0020DFD4 /* CoreVideo.framework in Frameworks */,
+				222B045716DD0A6A0036ED2D /* libglfw3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,9 +139,10 @@
 		222611D516DE1D3D00BE7510 /* data */ = {
 			isa = PBXGroup;
 			children = (
+				22219374170358BB005E8A39 /* bump.frag */,
+				22219375170358BB005E8A39 /* bump.vert */,
 				22C865481700DC510042DD34 /* withNormals.frag */,
 				22C865491700DC510042DD34 /* withNormals.vert */,
-				222611D616DE1D3D00BE7510 /* .gitkeep */,
 				222611D716DE1D3D00BE7510 /* passthrough.frag */,
 				222611D816DE1D3D00BE7510 /* passthrough.vert */,
 			);
@@ -137,9 +150,80 @@
 			path = bin/data;
 			sourceTree = SOURCE_ROOT;
 		};
+		222B044916DD0A6A0036ED2D /* ofxGL3Renderer */ = {
+			isa = PBXGroup;
+			children = (
+				222B044A16DD0A6A0036ED2D /* libs */,
+				222B045416DD0A6A0036ED2D /* src */,
+			);
+			name = ofxGL3Renderer;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		222B044A16DD0A6A0036ED2D /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				222B044B16DD0A6A0036ED2D /* glfw */,
+			);
+			path = libs;
+			sourceTree = "<group>";
+		};
+		222B044B16DD0A6A0036ED2D /* glfw */ = {
+			isa = PBXGroup;
+			children = (
+				222B044C16DD0A6A0036ED2D /* include */,
+				222B045116DD0A6A0036ED2D /* lib */,
+			);
+			path = glfw;
+			sourceTree = "<group>";
+		};
+		222B044C16DD0A6A0036ED2D /* include */ = {
+			isa = PBXGroup;
+			children = (
+				222B044D16DD0A6A0036ED2D /* GL */,
+				222B045016DD0A6A0036ED2D /* glfw_config.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		222B044D16DD0A6A0036ED2D /* GL */ = {
+			isa = PBXGroup;
+			children = (
+				222B044E16DD0A6A0036ED2D /* glfw3.h */,
+				222B044F16DD0A6A0036ED2D /* glfw3native.h */,
+			);
+			path = GL;
+			sourceTree = "<group>";
+		};
+		222B045116DD0A6A0036ED2D /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				222B045216DD0A6A0036ED2D /* osx */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		222B045216DD0A6A0036ED2D /* osx */ = {
+			isa = PBXGroup;
+			children = (
+				222B045316DD0A6A0036ED2D /* libglfw3.a */,
+			);
+			path = osx;
+			sourceTree = "<group>";
+		};
+		222B045416DD0A6A0036ED2D /* src */ = {
+			isa = PBXGroup;
+			children = (
+				222B045516DD0A6A0036ED2D /* ofAppGLFWWindow.cpp */,
+				222B045616DD0A6A0036ED2D /* ofAppGLFWWindow.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				222B044916DD0A6A0036ED2D /* ofxGL3Renderer */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -200,7 +284,7 @@
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
 				BB4B014C10F69532006C3DED /* addons */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
-				E4B69B5B0A3A1756003C02F2 /* testGL3Debug.app */,
+				E4B69B5B0A3A1756003C02F2 /* test3dribbonsDebug.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -228,9 +312,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E4B69B5A0A3A1756003C02F2 /* testGL3 */ = {
+		E4B69B5A0A3A1756003C02F2 /* test3dribbons */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "testGL3" */;
+			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "test3dribbons" */;
 			buildPhases = (
 				E4B69B580A3A1756003C02F2 /* Sources */,
 				E4B69B590A3A1756003C02F2 /* Frameworks */,
@@ -242,9 +326,9 @@
 			dependencies = (
 				E4EEB9AC138B136A00A80321 /* PBXTargetDependency */,
 			);
-			name = testGL3;
+			name = test3dribbons;
 			productName = myOFApp;
-			productReference = E4B69B5B0A3A1756003C02F2 /* testGL3Debug.app */;
+			productReference = E4B69B5B0A3A1756003C02F2 /* test3dribbonsDebug.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -252,7 +336,7 @@
 /* Begin PBXProject section */
 		E4B69B4C0A3A1720003C02F2 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "testGL3" */;
+			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "test3dribbons" */;
 			compatibilityVersion = "Xcode 2.4";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -273,7 +357,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				E4B69B5A0A3A1756003C02F2 /* testGL3 */,
+				E4B69B5A0A3A1756003C02F2 /* test3dribbons */,
 			);
 		};
 /* End PBXProject section */
@@ -311,10 +395,13 @@
 			files = (
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				E4B69E210A3A1BDC003C02F2 /* testApp.cpp in Sources */,
+				222B045816DD0A6A0036ED2D /* ofAppGLFWWindow.cpp in Sources */,
 				222611D916DE1D3D00BE7510 /* passthrough.frag in Sources */,
 				222611DA16DE1D3D00BE7510 /* passthrough.vert in Sources */,
 				22C8654A1700DC510042DD34 /* withNormals.frag in Sources */,
 				22C8654B1700DC510042DD34 /* withNormals.vert in Sources */,
+				22219376170358BB005E8A39 /* bump.frag in Sources */,
+				22219377170358BB005E8A39 /* bump.vert in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -351,7 +438,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				HEADER_SEARCH_PATHS = "$(OF_CORE_HEADERS)";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-lpthread",
@@ -384,7 +470,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				HEADER_SEARCH_PATHS = "$(OF_CORE_HEADERS)";
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-lpthread",
@@ -409,6 +494,7 @@
 				GCC_MODEL_TUNING = NONE;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				HEADER_SEARCH_PATHS = "$(OF_CORE_HEADERS)";
 				INFOPLIST_FILE = "openFrameworks-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
@@ -475,10 +561,30 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxGL3Renderer/libs/glfw/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/vs2010\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/win_cb\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/android/armeabi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/android/armeabi-v7a\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/ios\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/linux\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/linux64\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/linuxarmv6l\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/linuxarmv7l\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/osx\"";
 				PREBINDING = NO;
-				PRODUCT_NAME = testGL3Debug;
+				PRODUCT_NAME = test3dribbonsDebug;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -497,6 +603,7 @@
 				GCC_MODEL_TUNING = NONE;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				HEADER_SEARCH_PATHS = "$(OF_CORE_HEADERS)";
 				INFOPLIST_FILE = "openFrameworks-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
@@ -563,10 +670,30 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxGL3Renderer/libs/glfw/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/vs2010\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/win_cb\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/android/armeabi\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/android/armeabi-v7a\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/ios\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/linux\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/linux64\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/linuxarmv6l\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/linuxarmv7l\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/../../ofxOpenCv/libs/opencv/lib/osx\"";
 				PREBINDING = NO;
-				PRODUCT_NAME = testGL3;
+				PRODUCT_NAME = test3dribbons;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -574,7 +701,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "testGL3" */ = {
+		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "test3dribbons" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4B69B4E0A3A1720003C02F2 /* Debug */,
@@ -583,7 +710,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "testGL3" */ = {
+		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "test3dribbons" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E4B69B600A3A1757003C02F2 /* Debug */,

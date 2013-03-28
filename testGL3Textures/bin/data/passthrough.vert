@@ -2,7 +2,7 @@
 
 uniform mat4 projectionMatrix;
 uniform mat4 modelViewMatrix;
-uniform vec4 color;
+uniform vec4 uColor;
 
 
 in vec4  position;
