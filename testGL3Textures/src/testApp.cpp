@@ -33,7 +33,7 @@ void testApp::setup(){
 	ofSetSphereResolution(20);
 	
 	mFbo1.allocate(ofGetViewportWidth(), ofGetViewportHeight(),GL_RGBA, 6);
-	ofSetupScreenPerspective(ofGetViewportWidth(), ofGetViewportHeight(), OF_ORIENTATION_DEFAULT, true);
+	ofSetupScreenPerspective(ofGetViewportWidth(), ofGetViewportHeight(), OF_ORIENTATION_DEFAULT, false);
 	ofGetWidth();
 	
 	// create cube mesh
@@ -121,14 +121,14 @@ void testApp::draw(){
 	mFbo1.begin(false);
 	
 
-	ofBackgroundGradient(ofColor(240), ofColor(255,0,0));
+//	ofBackgroundGradient(ofColor(240), ofColor(255,0,0));
     mCam1.begin();
 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	glEnable(GL_DEPTH_TEST);
 	
-//	ofClear(64);
+	ofClear(64);
 
 	ofFill();
 	ofSetColor(255);
@@ -156,6 +156,7 @@ void testApp::draw(){
 //	ofDrawSphere(5);
 	mSphere.draw();
 	for (int i = 0; i<mSphere.getMesh().getVertices().size(); i++){
+//		ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL);
 		ofDrawBitmapString(ofToString(i), mSphere.getMesh().getVertices()[i]);
 	}
 	
@@ -176,9 +177,12 @@ void testApp::draw(){
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 	
-//	ofDrawBitmapString("testing 1,2,3", mLight1.getGlobalPosition());
 	
+	ofSetColor(255);
+	ofDrawBitmapString("inside camera draw 100,100,0", ofVec3f(100,100,0));
 	mCam1.end();
+	ofSetColor(255);
+	ofDrawBitmapString("inside fbo draw 100,100,0", ofVec3f(100,100,0));
 	mFbo1.end();
 
 	ofSetColor(255);
@@ -189,6 +193,8 @@ void testApp::draw(){
 
 	ofDisableAlphaBlending();
 
+	ofSetColor(255);
+	ofDrawBitmapString("standard draw 100,100,0", ofVec3f(100,100,0));
 	ProgrammableGLRenderer->finishRender();
 	
 	
