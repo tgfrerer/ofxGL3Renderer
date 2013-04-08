@@ -20,7 +20,7 @@ void testApp::setup(){
 	ProgrammableGLRenderer = ofPtr<ofProgrammableGLRenderer>(new ofProgrammableGLRenderer());
 
 	ofSetCurrentRenderer(ProgrammableGLRenderer);
-	ProgrammableGLRenderer->setup();
+	// ProgrammableGLRenderer->setup();
 #endif
 
 	mCam1.setupPerspective(true, 60, 0.1, 200);
@@ -121,6 +121,11 @@ void testApp::draw(){
 	mImg1.draw(0,0,10,10);
 	ofPopMatrix();
 
+	ofSetSphereResolution(20);
+	
+	for (int i = 0; i<100; i++){
+		ofDrawSphere((i%10)*0.2, (i/10)*0.2, 0.1);
+	}
 
 	ofSetColor(0, 0, 255);
 	glDisable(GL_CULL_FACE);

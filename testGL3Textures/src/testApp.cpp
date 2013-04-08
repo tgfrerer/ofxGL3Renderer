@@ -13,7 +13,7 @@ void testApp::setup(){
 	ProgrammableGLRenderer = ofPtr<ofProgrammableGLRenderer>(new ofProgrammableGLRenderer());
 
 	ofSetCurrentRenderer(ProgrammableGLRenderer);
-	ProgrammableGLRenderer->setup();
+//	ProgrammableGLRenderer->setup();
 
 	ofDisableSetupScreen();
 	mCam1.setupPerspective(false, 60, 0.1, 200);
@@ -91,7 +91,7 @@ void testApp::setup(){
 							  3.0,
 							  0);
 
-	mSphere.set(5,3, OF_PRIMITIVE_TRIANGLES);
+	mSphere.set(5,5, OF_PRIMITIVE_TRIANGLES);
 	vector<ofVec3f> norm =  mSphere.getMesh().getNormals();
 	vector<ofVec2f> tex = mSphere.getMesh().getTexCoords();
 	
@@ -121,14 +121,15 @@ void testApp::draw(){
 	mFbo1.begin(false);
 	
 
-//	ofBackgroundGradient(ofColor(240), ofColor(255,0,0));
+	ofClear(64);
+	ofBackgroundGradient(ofColor(240), ofColor(255,0,0));
     mCam1.begin();
 
 	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
+	glCullFace(GL_BACK);
 	glEnable(GL_DEPTH_TEST);
 	
-	ofClear(64);
+	
 
 	ofFill();
 	ofSetColor(255);
@@ -155,9 +156,10 @@ void testApp::draw(){
 //	ofDrawIcoSphere(0, 0, 0, 5);
 //	ofDrawSphere(5);
 	mSphere.draw();
+	glDisable(GL_CULL_FACE);
 	for (int i = 0; i<mSphere.getMesh().getVertices().size(); i++){
 //		ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL);
-		ofDrawBitmapString(ofToString(i), mSphere.getMesh().getVertices()[i]);
+		// ofDrawBitmapString(ofToString(i), mSphere.getMesh().getVertices()[i]);
 	}
 	
 //	ofDrawBitmapString("test", ofVec3f(0));

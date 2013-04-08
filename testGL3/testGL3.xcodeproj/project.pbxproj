@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		222611D916DE1D3D00BE7510 /* passthrough.frag in Sources */ = {isa = PBXBuildFile; fileRef = 222611D716DE1D3D00BE7510 /* passthrough.frag */; };
 		222611DA16DE1D3D00BE7510 /* passthrough.vert in Sources */ = {isa = PBXBuildFile; fileRef = 222611D816DE1D3D00BE7510 /* passthrough.vert */; };
+		229E6A7F170F282800D89AD2 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 229E6A76170F282800D89AD2 /* libglfw3.a */; };
+		229E6A81170F282800D89AD2 /* ofAppGLFWWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 229E6A7A170F282800D89AD2 /* ofAppGLFWWindow.cpp */; };
 		22C8654A1700DC510042DD34 /* withNormals.frag in Sources */ = {isa = PBXBuildFile; fileRef = 22C865481700DC510042DD34 /* withNormals.frag */; };
 		22C8654B1700DC510042DD34 /* withNormals.vert in Sources */ = {isa = PBXBuildFile; fileRef = 22C865491700DC510042DD34 /* withNormals.vert */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
@@ -67,6 +69,12 @@
 		222611D616DE1D3D00BE7510 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		222611D716DE1D3D00BE7510 /* passthrough.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passthrough.frag; sourceTree = "<group>"; };
 		222611D816DE1D3D00BE7510 /* passthrough.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = passthrough.vert; sourceTree = "<group>"; };
+		229E6A6F170F282800D89AD2 /* glfw3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glfw3.h; sourceTree = "<group>"; };
+		229E6A70170F282800D89AD2 /* glfw3native.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glfw3native.h; sourceTree = "<group>"; };
+		229E6A71170F282800D89AD2 /* glfw_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glfw_config.h; sourceTree = "<group>"; };
+		229E6A76170F282800D89AD2 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libglfw3.a; sourceTree = "<group>"; };
+		229E6A7A170F282800D89AD2 /* ofAppGLFWWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofAppGLFWWindow.cpp; sourceTree = "<group>"; };
+		229E6A7B170F282800D89AD2 /* ofAppGLFWWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofAppGLFWWindow.h; sourceTree = "<group>"; };
 		22C865481700DC510042DD34 /* withNormals.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = withNormals.frag; sourceTree = "<group>"; };
 		22C865491700DC510042DD34 /* withNormals.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = withNormals.vert; sourceTree = "<group>"; };
 		22D3BA4B16DE33850016A419 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
@@ -118,6 +126,7 @@
 				E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */,
 				E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */,
 				E7E077E515D3B63C0020DFD4 /* CoreVideo.framework in Frameworks */,
+				229E6A7F170F282800D89AD2 /* libglfw3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,9 +146,73 @@
 			path = bin/data;
 			sourceTree = SOURCE_ROOT;
 		};
+		229E6A6B170F282800D89AD2 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				229E6A6C170F282800D89AD2 /* glfw */,
+			);
+			name = libs;
+			path = ../libs;
+			sourceTree = "<group>";
+		};
+		229E6A6C170F282800D89AD2 /* glfw */ = {
+			isa = PBXGroup;
+			children = (
+				229E6A6D170F282800D89AD2 /* include */,
+				229E6A72170F282800D89AD2 /* lib */,
+			);
+			path = glfw;
+			sourceTree = "<group>";
+		};
+		229E6A6D170F282800D89AD2 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				229E6A6E170F282800D89AD2 /* GL */,
+				229E6A71170F282800D89AD2 /* glfw_config.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		229E6A6E170F282800D89AD2 /* GL */ = {
+			isa = PBXGroup;
+			children = (
+				229E6A6F170F282800D89AD2 /* glfw3.h */,
+				229E6A70170F282800D89AD2 /* glfw3native.h */,
+			);
+			path = GL;
+			sourceTree = "<group>";
+		};
+		229E6A72170F282800D89AD2 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				229E6A75170F282800D89AD2 /* osx */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		229E6A75170F282800D89AD2 /* osx */ = {
+			isa = PBXGroup;
+			children = (
+				229E6A76170F282800D89AD2 /* libglfw3.a */,
+			);
+			path = osx;
+			sourceTree = "<group>";
+		};
+		229E6A79170F282800D89AD2 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				229E6A7A170F282800D89AD2 /* ofAppGLFWWindow.cpp */,
+				229E6A7B170F282800D89AD2 /* ofAppGLFWWindow.h */,
+			);
+			name = src;
+			path = ../src;
+			sourceTree = "<group>";
+		};
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				229E6A6B170F282800D89AD2 /* libs */,
+				229E6A79170F282800D89AD2 /* src */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -315,6 +388,7 @@
 				222611DA16DE1D3D00BE7510 /* passthrough.vert in Sources */,
 				22C8654A1700DC510042DD34 /* withNormals.frag in Sources */,
 				22C8654B1700DC510042DD34 /* withNormals.vert in Sources */,
+				229E6A81170F282800D89AD2 /* ofAppGLFWWindow.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,8 +549,14 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxGL3Renderer/libs/glfw/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../libs/glfw/lib/linux64\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../libs/glfw/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../libs/glfw/lib/osx64\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = testGL3Debug;
 				WRAPPER_EXTENSION = app;
@@ -563,8 +643,14 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../addons/ofxGL3Renderer/libs/glfw/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../libs/glfw/lib/linux64\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../libs/glfw/lib/osx\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../libs/glfw/lib/osx64\"";
 				PREBINDING = NO;
 				PRODUCT_NAME = testGL3;
 				WRAPPER_EXTENSION = app;
