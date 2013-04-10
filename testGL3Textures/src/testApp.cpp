@@ -15,7 +15,7 @@ void testApp::setup(){
 	ofSetCurrentRenderer(ProgrammableGLRenderer);
 //	ProgrammableGLRenderer->setup();
 
-	ofDisableSetupScreen();
+	// ofDisableSetupScreen();
 	mCam1.setupPerspective(false, 60, 0.1, 200);
 	mCam1.setGlobalPosition(5, 5, 20);
 	
@@ -32,8 +32,7 @@ void testApp::setup(){
 	ofEnableArbTex();
 	ofSetSphereResolution(20);
 	
-	mFbo1.allocate(ofGetViewportWidth(), ofGetViewportHeight(),GL_RGBA, 6);
-	ofSetupScreenPerspective(ofGetViewportWidth(), ofGetViewportHeight(), OF_ORIENTATION_DEFAULT, false);
+	mFbo1.allocate(ofGetWidth(), ofGetHeight(),GL_RGBA);
 	ofGetWidth();
 	
 	// create cube mesh
@@ -241,6 +240,10 @@ void testApp::draw(){
 //	ofDrawSphere(5);
 	mSphere.draw();
 	glDisable(GL_CULL_FACE);
+	for (size_t i = 0; i<mSphere.getMesh().getVertices().size(); i++){
+//		ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL);
+		// ofDrawBitmapString(ofToString(i), mSphere.getMesh().getVertices()[i]);
+	}
 	
 //	ofDrawBitmapString("test", ofVec3f(0));
 	
