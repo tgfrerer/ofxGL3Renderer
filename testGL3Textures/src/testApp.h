@@ -15,7 +15,8 @@ class testApp : public ofBaseApp{
 	ofVboMesh						mMshCube;
 
 	ofSpherePrimitive				mSphere;
-	
+	vector<ofVec4f>					tangents;
+
 	bool shouldDrawString;
 
 	GLuint biNormalVboId;

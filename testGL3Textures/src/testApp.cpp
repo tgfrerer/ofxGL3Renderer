@@ -95,12 +95,96 @@ void testApp::setup(){
 	vector<ofVec3f> norm =  mSphere.getMesh().getNormals();
 	vector<ofVec2f> tex = mSphere.getMesh().getTexCoords();
 	
+	// for every triangle, we add up the s and t vector per vertex.
+
+	// first find out how the triangles are drawn.
+	
 	if (mSphere.getMesh().hasIndices()){
-		ofLogNotice() << "vertices" << mSphere.getMesh().getVertices().size();
-		ofLogNotice() << "normals" << mSphere.getMesh().getNormals().size();
-		ofLogNotice() << "texcoords: " << mSphere.getMesh().getTexCoords().size();
-		ofLogNotice() << "has Indice:" << mSphere.getMesh().getIndices().size();
+		ofLogNotice() << "Vertices   " << mSphere.getMesh().getVertices().size();
+		ofLogNotice() << "Normals:   " << mSphere.getMesh().getNormals().size();
+		ofLogNotice() << "Texcoords: " << mSphere.getMesh().getTexCoords().size();
+		ofLogNotice() << "Indices:   " << mSphere.getMesh().getIndices().size();
 //		ofExit();
+		
+		// three indices at a time make a triangle.
+		
+		size_t vertexCount = mSphere.getMesh().getVertices().size();
+		
+		vector<ofVec3f> tanS(vertexCount, ofVec3f());	// pre-fill with vertexCount elements
+		vector<ofVec3f> tanT(vertexCount, ofVec3f());
+
+		tangents.resize(vertexCount, ofVec4f());
+		
+		for (int i = 0; i*3 < mSphere.getMesh().getIndices().size(); i++){
+
+			// get the three vertex indices that form a triangle
+			ofIndexType i1 = mSphere.getMesh().getIndices()[i*3];
+			ofIndexType i2 = mSphere.getMesh().getIndices()[i*3 + 1];
+			ofIndexType i3 = mSphere.getMesh().getIndices()[i*3 + 2];
+			
+			ofVec3f v1 = mSphere.getMesh().getVertex(i1);
+			ofVec3f v2 = mSphere.getMesh().getVertex(i2);
+			ofVec3f v3 = mSphere.getMesh().getVertex(i3);
+			
+			ofVec2f w1 = mSphere.getMesh().getTexCoord(i1);
+			ofVec2f w2 = mSphere.getMesh().getTexCoord(i2);
+			ofVec2f w3 = mSphere.getMesh().getTexCoord(i3);
+
+			float x1 = v2.x - v1.x;
+			float x2 = v3.x - v1.x;
+
+			float y1 = v2.y - v1.y;
+			float y2 = v3.y - v1.y;
+			
+			float z1 = v2.z - v1.z;
+			float z2 = v3.z - v1.z;
+			
+			float s1 = w2.x - w1.x;
+			float s2 = w3.x - w1.x;
+			
+			float t1 = w2.y - w1.y;
+			float t2 = w3.y - w1.y;
+			
+			float r = 1.0f / (s1 * t2 - s2 * t1);
+			
+			ofVec3f sDir ( r * (t2 * x1 - t1 * x2),
+						   r * (t2 * y1 - t1 * y2),
+						   r * (t2 * z1 - t1 * z2));
+			
+			ofVec3f tDir ( r * (s1 * x2 - s2 * x1),
+						   r * (s1 * y2 - s2 * y1),
+						   r * (s1 * z2 - s2 * z1));
+			
+			
+			tanS[i1] += sDir;
+			tanS[i2] += sDir;
+			tanS[i3] += sDir;
+			
+			tanT[i1] += tDir;
+			tanT[i2] += tDir;
+			tanT[i3] += tDir;
+			
+		}
+		
+
+		
+		for (size_t i = 0; i < vertexCount; i++){
+			const ofVec3f& n = mSphere.getMesh().getNormals()[i];
+			const ofVec3f& t = tanS[i];
+			
+			// Gram-Schmidt orthogonalize...
+			
+			tangents[i] = (t-n * n.dot(t)).getNormalized();
+			
+			// calculate handedness and store as w-cord
+			
+			tangents[i].w = (n.crossed(t).dot(tanT[i])) < 0.0f ? -1.0f : 1.0f;
+			
+			ofLogNotice() << tangents[i];
+			
+		}
+		
+		
 	}
 	
 	
@@ -157,10 +241,6 @@ void testApp::draw(){
 //	ofDrawSphere(5);
 	mSphere.draw();
 	glDisable(GL_CULL_FACE);
-	for (int i = 0; i<mSphere.getMesh().getVertices().size(); i++){
-//		ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL);
-		// ofDrawBitmapString(ofToString(i), mSphere.getMesh().getVertices()[i]);
-	}
 	
 //	ofDrawBitmapString("test", ofVec3f(0));
 	
@@ -171,6 +251,21 @@ void testApp::draw(){
 //	ofPopMatrix();
 
 	mFlatNormalShader->end();
+
+	for (int i = 0; i<mSphere.getMesh().getVertices().size(); i++){
+		ofSetColor(0,0,255);
+		ofLine(mSphere.getMesh().getVertex(i), mSphere.getMesh().getVertex(i) + 0.7 * mSphere.getMesh().getNormal(i));
+
+		ofSetColor(0,255,0);
+		ofLine(mSphere.getMesh().getVertex(i), mSphere.getMesh().getVertex(i) + 0.7 * ofVec3f(tangents[i]));
+
+		ofSetColor(255,0,0);
+		ofLine(mSphere.getMesh().getVertex(i), mSphere.getMesh().getVertex(i) + tangents[i].w * 0.7 * ofVec3f(tangents[i]).crossed(mSphere.getMesh().getNormal(i)));
+
+		//		ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL);
+		// ofDrawBitmapString(ofToString(i), mSphere.getMesh().getVertices()[i]);
+	}
+
 	
 	ofSetColor(255);
 	ofLine(mLight1.getGlobalPosition(),ofVec3f(0,0,0));
